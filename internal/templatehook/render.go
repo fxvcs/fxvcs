@@ -16,6 +16,7 @@ import (
 	"text/template/parse"
 
 	"fxvcs.dev/fxvcs/internal/durablefs"
+	"fxvcs.dev/fxvcs/internal/fileprotect"
 	"fxvcs.dev/fxvcs/internal/layout"
 )
 
@@ -241,6 +242,11 @@ func Write(options WriteOptions, rendered []byte) (string, error) {
 	}
 	if err := tmp.Close(); err != nil {
 		return "", err
+	}
+	if options.ContainsSecret {
+		if err := fileprotect.Protect(tmpPath); err != nil {
+			return "", err
+		}
 	}
 	if err := os.Link(tmpPath, destination); err != nil {
 		if _, statErr := os.Lstat(destination); statErr == nil {

@@ -18,6 +18,7 @@ import (
 	"fxvcs.dev/fxvcs/internal/controlplane/gitops"
 	"fxvcs.dev/fxvcs/internal/domain"
 	"fxvcs.dev/fxvcs/internal/durablefs"
+	"fxvcs.dev/fxvcs/internal/fileprotect"
 	"fxvcs.dev/fxvcs/internal/integrity"
 	"fxvcs.dev/fxvcs/internal/layout"
 	"fxvcs.dev/fxvcs/internal/materialize"
@@ -534,7 +535,11 @@ func (c *Coord) AssembleReleaseStagingWithOptions(ctx context.Context, rel domai
 		}
 		configPath := fivem.HealthResourceConfigPath
 		configDigest := sha256.Sum256(config)
-		if err := writeDurableFile(filepath.Join(staging, filepath.FromSlash(configPath)), config, 0o400); err != nil {
+		secretConfigPath := filepath.Join(staging, filepath.FromSlash(configPath))
+		if err := writeDurableFile(secretConfigPath, config, 0o400); err != nil {
+			return AssemblyResult{}, err
+		}
+		if err := fileprotect.Protect(secretConfigPath); err != nil {
 			return AssemblyResult{}, err
 		}
 		metadata.Files = append(metadata.Files, AssemblyFile{Path: configPath, Bytes: int64(len(config)), Mode: "100400", Placement: "generated-secret"})

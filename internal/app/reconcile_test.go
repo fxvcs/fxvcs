@@ -13,6 +13,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strings"
 	"testing"
@@ -1220,7 +1221,7 @@ func TestAssembleGeneratesAuthenticatedResourceStateHelperLastWithoutPersistingT
 	if err != nil || !bytes.Contains(config, token) {
 		t.Fatalf("secret config=%q err=%v", config, err)
 	}
-	if info, err := os.Stat(configPath); err != nil || info.Mode().Perm() != 0o400 {
+	if info, err := os.Stat(configPath); err != nil || (runtime.GOOS != "windows" && info.Mode().Perm() != 0o400) {
 		t.Fatalf("secret config mode=%v err=%v", info.Mode().Perm(), err)
 	}
 	server, err := os.ReadFile(filepath.Join(result.StagingPath, "resources", "[fxvcs]", "fxvcs-health", "server.lua"))

@@ -649,6 +649,47 @@ func cleanAbsolute(path, value string, iss *Issues) bool {
 	return true
 }
 
+func portableOverlap(a, b string) bool {
+	if filepath.IsAbs(a) && filepath.IsAbs(b) {
+		return pathsafe.Within(a, b) || pathsafe.Within(b, a)
+	}
+	if pathpkg.IsAbs(a) && pathpkg.IsAbs(b) {
+		a, b = pathpkg.Clean(a), pathpkg.Clean(b)
+		return a == b || strings.HasPrefix(a, b+"/") || strings.HasPrefix(b, a+"/")
+	}
+	return false
+}
+
+func validateAgentRoots(deployRoot, serverData, txData string) error {
+	// Use the runtime-native validator when possible. When a Windows validator
+	// reads a POSIX agent config, preserve the same overlap rules with path's
+	// slash semantics instead of rejecting an otherwise valid document.
+	if filepath.IsAbs(deployRoot) && filepath.IsAbs(serverData) && (txData == "" || filepath.IsAbs(txData)) {
+		return (layout.Roots{DeployRoot: deployRoot, ServerData: serverData, TxData: txData}).Validate()
+	}
+	if !pathpkg.IsAbs(deployRoot) || !pathpkg.IsAbs(serverData) || (txData != "" && !pathpkg.IsAbs(txData)) {
+		return fmt.Errorf("%w: mixed path styles", layout.ErrInvalidRoot)
+	}
+	if portableOverlap(deployRoot, serverData) {
+		return fmt.Errorf("%w: deployRoot and serverData", layout.ErrOverlap)
+	}
+	if txData != "" && portableOverlap(deployRoot, txData) {
+		return fmt.Errorf("%w: txData must be outside deployRoot", layout.ErrOverlap)
+	}
+	return nil
+}
+
+func validateDistinctDeployRoots(roots []string) error {
+	for i := range roots {
+		for j := i + 1; j < len(roots); j++ {
+			if portableOverlap(roots[i], roots[j]) {
+				return fmt.Errorf("%w: %q and %q", layout.ErrOverlap, roots[i], roots[j])
+			}
+		}
+	}
+	return nil
+}
+
 func checkAgentConfig(c *domain.AgentConfig) Issues {
 	var iss Issues
 	seenTargets := map[string]string{}
@@ -683,11 +724,11 @@ func checkAgentConfig(c *domain.AgentConfig) Issues {
 			deployRoots = append(deployRoots, target.DeployRoot)
 		}
 		if deployOK && serverOK && txOK {
-			if err := (layout.Roots{DeployRoot: target.DeployRoot, ServerData: target.ServerData, TxData: target.Runtime.TxData}).Validate(); err != nil {
+			if err := validateAgentRoots(target.DeployRoot, target.ServerData, target.Runtime.TxData); err != nil {
 				iss = append(iss, Issue{Path: p, Message: err.Error(), Cause: err})
 			}
 		}
-		if deployOK && systemResourcesOK && target.Runtime.SystemResourcesRoot != "" && (pathsafe.Within(target.DeployRoot, target.Runtime.SystemResourcesRoot) || pathsafe.Within(target.Runtime.SystemResourcesRoot, target.DeployRoot)) {
+		if deployOK && systemResourcesOK && target.Runtime.SystemResourcesRoot != "" && portableOverlap(target.DeployRoot, target.Runtime.SystemResourcesRoot) {
 			iss = append(iss, Issue{Path: p + "/runtime/systemResourcesRoot", Message: "systemResourcesRoot must not overlap deployRoot"})
 		}
 		if endpoint := target.Runtime.ResourceState; endpoint != nil && endpoint.Host != "127.0.0.1" && endpoint.Host != "::1" {
@@ -757,7 +798,7 @@ func checkAgentConfig(c *domain.AgentConfig) Issues {
 		}
 	}
 
-	if err := layout.DistinctDeployRoots(deployRoots...); err != nil {
+	if err := validateDistinctDeployRoots(deployRoots); err != nil {
 		iss = append(iss, Issue{Path: "/spec/targets", Message: err.Error(), Cause: err})
 	}
 	return iss

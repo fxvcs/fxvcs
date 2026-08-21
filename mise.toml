@@ -27,7 +27,10 @@ run = 'go vet ./...'
 
 [tasks.lint]
 description = "golangci-lint run ./... (.golangci.yml, v2 format)"
-run = 'golangci-lint run ./...'
+# The CI aggregate runs lint alongside vet and the full test suite. A cold
+# hosted runner can spend most of golangci-lint's five-minute default timeout
+# compiling dependencies under that contention even when there are no issues.
+run = 'golangci-lint run --timeout=10m ./...'
 
 [tasks.test]
 description = "go test ./..."

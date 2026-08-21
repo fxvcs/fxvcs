@@ -101,7 +101,7 @@ func Switch(deployRoot, expected, next string) error {
 	if err := os.Symlink(target, tmpPath); err != nil {
 		return err
 	}
-	if err := os.Rename(tmpPath, layout.Current(deployRoot)); err != nil {
+	if err := replaceCurrent(tmpPath, layout.Current(deployRoot)); err != nil {
 		return err
 	}
 	return durablefs.SyncDir(deployRoot)

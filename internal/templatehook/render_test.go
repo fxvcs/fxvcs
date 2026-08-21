@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -57,9 +58,11 @@ func TestWriteContainsOutputAndProtectsSecrets(t *testing.T) {
 	if err != nil || string(data) != "secret config" {
 		t.Fatalf("written output: %q, %v", data, err)
 	}
-	info, _ := os.Stat(path)
-	if info.Mode().Perm() != 0o600 {
-		t.Fatalf("mode = %o", info.Mode().Perm())
+	if runtime.GOOS != "windows" {
+		info, _ := os.Stat(path)
+		if info.Mode().Perm() != 0o600 {
+			t.Fatalf("mode = %o", info.Mode().Perm())
+		}
 	}
 	if _, err := Write(options, []byte("replace")); !errors.Is(err, ErrDestination) {
 		t.Fatalf("existing destination replaced: %v", err)

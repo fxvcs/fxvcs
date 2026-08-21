@@ -115,6 +115,9 @@ jobs:
           key: go-lint-${{ runner.os }}-${{ hashFiles('go.sum', 'mise.toml') }}
           restore-keys: go-lint-${{ runner.os }}-
 
+      - name: Download Go modules
+        run: go mod download
+
       - name: ci (fmt-check, vet, lint, test)
         run: mise run ci
 
