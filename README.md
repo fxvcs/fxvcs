@@ -14,9 +14,7 @@ integrity, and making sure required content is published before a Git push.
 
 > [!WARNING]
 > fxvcs is pre-release software. It is not yet ready to manage a production
-> server. Stage 4 target reconciliation is available for evaluation, but its
-> Linux/txAdmin live-lab matrix remains unverified and committed formats or
-> commands may still change.
+> server.
 
 ## Why fxvcs?
 
