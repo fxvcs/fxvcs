@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"os"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -102,8 +103,9 @@ func TestDetectAutoFollowsTerminal(t *testing.T) {
 	if _, set := os.LookupEnv("NO_COLOR"); set {
 		t.Skip("NO_COLOR set in the environment")
 	}
-	if Detect("auto", io.Discard, func(io.Writer) bool { return true }) != true {
-		t.Fatal("auto on a terminal should be on")
+	want := runtime.GOOS != "windows"
+	if got := Detect("auto", io.Discard, func(io.Writer) bool { return true }); got != want {
+		t.Fatalf("auto terminal detection = %v, want %v", got, want)
 	}
 	if Detect("auto", io.Discard, func(io.Writer) bool { return false }) != false {
 		t.Fatal("auto off a terminal should be off")

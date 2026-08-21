@@ -145,7 +145,9 @@ func MigrateFile(ctx context.Context, path string, reg *Registry, opts FileOptio
 }
 
 func fsyncFile(p string) error {
-	f, err := os.Open(p)
+	// Windows requires a handle with write access for FlushFileBuffers, which
+	// backs os.File.Sync. The staging database is private and writable here.
+	f, err := os.OpenFile(p, os.O_RDWR, 0)
 	if err != nil {
 		return err
 	}

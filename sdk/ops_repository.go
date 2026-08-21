@@ -49,6 +49,9 @@ func (c *Client) RepositoryIdentify(ctx context.Context, req RepositoryIdentifyR
 		}
 		return nil, WrapError(CodeNotRepository, fmt.Sprintf("%s is not inside a Git worktree", req.Path), err)
 	}
+	// Git prints worktree paths with forward slashes on Windows. Normalize the
+	// public result before combining or comparing it with native paths.
+	root = filepath.Clean(root)
 
 	component, err := markerExists(filepath.Join(root, repository.ConfigPath))
 	if err != nil {

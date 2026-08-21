@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"fxvcs.dev/fxvcs/internal/domain"
+	"fxvcs.dev/fxvcs/internal/durablefs"
 	"fxvcs.dev/fxvcs/internal/pathsafe"
 )
 
@@ -194,7 +195,7 @@ func ValidateEnvfile(path string, forbiddenRoots []string) error {
 	if err != nil {
 		return err
 	}
-	if !info.Mode().IsRegular() || info.Mode().Perm()&0o077 != 0 || info.Mode().Perm()&0o400 == 0 || !ownedByCurrentUser(info) {
+	if !info.Mode().IsRegular() || !protectedFile(path, info) {
 		return fmt.Errorf("%w: envfile must be an ordinary readable owner-only file owned by the agent user", ErrUnsafeProvider)
 	}
 	return nil
@@ -230,6 +231,11 @@ func LoadOrCreateHMACKey(path string) ([]byte, error) {
 			_ = os.Remove(path)
 		}
 	}()
+	// POSIX create modes do not describe Windows ACLs. Tighten and verify the
+	// new file before any key bytes are written.
+	if err := protectCreatedFile(path); err != nil {
+		return nil, err
+	}
 	if _, err := f.Write(key); err != nil {
 		return nil, err
 	}
@@ -239,12 +245,7 @@ func LoadOrCreateHMACKey(path string) ([]byte, error) {
 	if err := f.Close(); err != nil {
 		return nil, err
 	}
-	dir, err := os.Open(filepath.Dir(path))
-	if err != nil {
-		return nil, err
-	}
-	defer dir.Close()
-	if err := dir.Sync(); err != nil {
+	if err := durablefs.SyncDir(filepath.Dir(path)); err != nil {
 		return nil, err
 	}
 	ok = true
@@ -258,7 +259,7 @@ func LoadHMACKey(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if !info.Mode().IsRegular() || info.Mode().Perm()&0o077 != 0 || !ownedByCurrentUser(info) {
+	if !info.Mode().IsRegular() || !protectedFile(path, info) {
 		return nil, fmt.Errorf("%w: HMAC key must be an ordinary owner-only file owned by the agent user", ErrUnsafeProvider)
 	}
 	key, err := os.ReadFile(path)

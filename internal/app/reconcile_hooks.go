@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 
@@ -42,7 +44,8 @@ func (c *Coord) ResolveAssemblyHooks(ctx context.Context, target domain.Target, 
 				return AssemblyOptions{}, err
 			}
 			options.HookDigests[request.ID] = hookDigest
-			if _, err := layout.HookDestination("/realization", definition.AllowedDestRoot, request.Destination); err != nil {
+			validationRoot := filepath.Join(filepath.VolumeName(os.TempDir())+string(filepath.Separator), "realization")
+			if _, err := layout.HookDestination(validationRoot, definition.AllowedDestRoot, request.Destination); err != nil {
 				return AssemblyOptions{}, fmt.Errorf("reconcile: hook %s destination: %w", request.ID, err)
 			}
 			if definition.AllowedDestRoot != layout.RuntimeDir+"/"+layout.RuntimeConfig {

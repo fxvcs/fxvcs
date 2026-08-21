@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 
+	"fxvcs.dev/fxvcs/internal/durablefs"
 	"fxvcs.dev/fxvcs/internal/layout"
 )
 
@@ -58,12 +59,7 @@ func EnsureServerDataLinks(roots layout.Roots) error {
 			return err
 		}
 	}
-	dir, err := os.Open(roots.ServerData)
-	if err != nil {
-		return err
-	}
-	defer dir.Close()
-	return dir.Sync()
+	return durablefs.SyncDir(roots.ServerData)
 }
 
 func validateServerDataLink(destination, expected string) error {

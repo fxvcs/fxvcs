@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"fxvcs.dev/fxvcs/internal/durablefs"
 	"fxvcs.dev/fxvcs/internal/journal"
 	"fxvcs.dev/fxvcs/internal/layout"
 	"fxvcs.dev/fxvcs/internal/lock"
@@ -103,12 +104,7 @@ func Switch(deployRoot, expected, next string) error {
 	if err := os.Rename(tmpPath, layout.Current(deployRoot)); err != nil {
 		return err
 	}
-	dir, err := os.Open(deployRoot)
-	if err != nil {
-		return err
-	}
-	defer dir.Close()
-	return dir.Sync()
+	return durablefs.SyncDir(deployRoot)
 }
 
 type journalPayload struct {

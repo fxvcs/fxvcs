@@ -2,6 +2,7 @@ package schema
 
 import (
 	"fmt"
+	pathpkg "path"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -636,7 +637,12 @@ func checkTarget(t *domain.Target) Issues {
 var secretAliasRE = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
 
 func cleanAbsolute(path, value string, iss *Issues) bool {
-	if value == "" || !filepath.IsAbs(value) || filepath.Clean(value) != value {
+	// Agent configs are often authored or validated on a different OS from
+	// their target. Accept clean POSIX paths on Windows as well as native paths
+	// so semantic validation does not depend on the validator's host OS.
+	native := filepath.IsAbs(value) && filepath.Clean(value) == value
+	posix := pathpkg.IsAbs(value) && pathpkg.Clean(value) == value
+	if value == "" || (!native && !posix) {
 		*iss = append(*iss, Issue{Path: path, Message: fmt.Sprintf("path %q must be absolute and clean", value), Cause: layout.ErrInvalidRoot})
 		return false
 	}

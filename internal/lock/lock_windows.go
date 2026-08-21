@@ -10,7 +10,7 @@ import (
 )
 
 func tryLock(f *os.File) error {
-	ol := new(windows.Overlapped)
+	ol := lockOverlapped()
 	err := windows.LockFileEx(windows.Handle(f.Fd()), windows.LOCKFILE_EXCLUSIVE_LOCK|windows.LOCKFILE_FAIL_IMMEDIATELY, 0, 1, 0, ol)
 	if err != nil {
 		if errors.Is(err, windows.ERROR_LOCK_VIOLATION) || errors.Is(err, windows.ERROR_IO_PENDING) {
@@ -22,6 +22,13 @@ func tryLock(f *os.File) error {
 }
 
 func unlock(f *os.File) error {
-	ol := new(windows.Overlapped)
+	ol := lockOverlapped()
 	return windows.UnlockFileEx(windows.Handle(f.Fd()), 0, 1, 0, ol)
+}
+
+// Lock a byte well beyond the owner JSON. Windows enforces byte-range locks
+// on reads too, so locking byte zero prevented contenders from reading the
+// diagnostics record while the holder was alive.
+func lockOverlapped() *windows.Overlapped {
+	return &windows.Overlapped{Offset: 0xffffffff, OffsetHigh: 0x7fffffff}
 }

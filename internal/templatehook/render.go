@@ -15,6 +15,7 @@ import (
 	"text/template"
 	"text/template/parse"
 
+	"fxvcs.dev/fxvcs/internal/durablefs"
 	"fxvcs.dev/fxvcs/internal/layout"
 )
 
@@ -247,12 +248,7 @@ func Write(options WriteOptions, rendered []byte) (string, error) {
 		}
 		return "", err
 	}
-	dir, err := os.Open(parent)
-	if err != nil {
-		return "", err
-	}
-	defer dir.Close()
-	if err := dir.Sync(); err != nil {
+	if err := durablefs.SyncDir(parent); err != nil {
 		return "", err
 	}
 	return destination, nil

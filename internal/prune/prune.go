@@ -15,6 +15,7 @@ import (
 
 	"fxvcs.dev/fxvcs/internal/activation"
 	"fxvcs.dev/fxvcs/internal/canonical"
+	"fxvcs.dev/fxvcs/internal/durablefs"
 	"fxvcs.dev/fxvcs/internal/layout"
 	"fxvcs.dev/fxvcs/internal/state"
 )
@@ -365,10 +366,5 @@ func Recover(ctx context.Context, deployRoot, planID string, options ApplyOption
 }
 
 func syncDir(path string) error {
-	dir, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer dir.Close()
-	return dir.Sync()
+	return durablefs.SyncDir(path)
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"fxvcs.dev/fxvcs/internal/domain"
@@ -70,15 +71,21 @@ func TestAutomaticProviderNamesAndTargetBoundVersions(t *testing.T) {
 func TestEnvfilePermissionsAndSymlinksFailClosed(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "open.env")
-	if err := os.WriteFile(path, []byte("TOKEN=x\n"), 0o644); err != nil {
+	mode := os.FileMode(0o600)
+	if runtime.GOOS != "windows" {
+		mode = 0o644
+	}
+	if err := os.WriteFile(path, []byte("TOKEN=x\n"), mode); err != nil {
 		t.Fatal(err)
 	}
-	_, err := readEnvFile(path)
-	if !errors.Is(err, ErrUnsafeProvider) {
-		t.Fatalf("world-readable envfile accepted: %v", err)
-	}
-	if err := os.Chmod(path, 0o600); err != nil {
-		t.Fatal(err)
+	if runtime.GOOS != "windows" {
+		_, err := readEnvFile(path)
+		if !errors.Is(err, ErrUnsafeProvider) {
+			t.Fatalf("world-readable envfile accepted: %v", err)
+		}
+		if err := os.Chmod(path, 0o600); err != nil {
+			t.Fatal(err)
+		}
 	}
 	link := filepath.Join(dir, "link.env")
 	if err := os.Symlink(path, link); err != nil {
@@ -125,10 +132,12 @@ func TestHMACKeyCreationAndUnsafeExistingKey(t *testing.T) {
 	if err != nil || string(a) != string(b) || len(a) != 32 {
 		t.Fatalf("key round trip failed: %v", err)
 	}
-	if err := os.Chmod(path, 0o644); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := LoadOrCreateHMACKey(path); !errors.Is(err, ErrUnsafeProvider) {
-		t.Fatalf("unsafe key accepted: %v", err)
+	if runtime.GOOS != "windows" {
+		if err := os.Chmod(path, 0o644); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := LoadOrCreateHMACKey(path); !errors.Is(err, ErrUnsafeProvider) {
+			t.Fatalf("unsafe key accepted: %v", err)
+		}
 	}
 }

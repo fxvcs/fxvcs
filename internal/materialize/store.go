@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"fxvcs.dev/fxvcs/internal/durablefs"
 	"fxvcs.dev/fxvcs/internal/integrity"
 	"fxvcs.dev/fxvcs/internal/layout"
 	"fxvcs.dev/fxvcs/internal/pathsafe"
@@ -257,12 +258,7 @@ func (r contextReader) Read(p []byte) (int, error) {
 }
 
 func syncDir(path string) error {
-	dir, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer dir.Close()
-	if err := dir.Sync(); err != nil {
+	if err := durablefs.SyncDir(path); err != nil {
 		return fmt.Errorf("materialize: fsync directory %s: %w", path, err)
 	}
 	return nil

@@ -17,6 +17,7 @@ import (
 	"fxvcs.dev/fxvcs/internal/canonical"
 	"fxvcs.dev/fxvcs/internal/controlplane/gitops"
 	"fxvcs.dev/fxvcs/internal/domain"
+	"fxvcs.dev/fxvcs/internal/durablefs"
 	"fxvcs.dev/fxvcs/internal/integrity"
 	"fxvcs.dev/fxvcs/internal/layout"
 	"fxvcs.dev/fxvcs/internal/materialize"
@@ -753,10 +754,5 @@ func syncAssemblyDirs(root string) error {
 }
 
 func syncDirectory(path string) error {
-	dir, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer dir.Close()
-	return dir.Sync()
+	return durablefs.SyncDir(path)
 }
