@@ -40,6 +40,18 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
 
+      # Real-time scanning inspects every file the test suite creates (many
+      # thousands of small git objects and temp repos), which costs a large
+      # fraction of Windows job wall-clock. The runner user is an admin.
+      - name: Exclude build/test paths from Windows Defender
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          Add-MpPreference -ExclusionPath "$env:GITHUB_WORKSPACE"
+          Add-MpPreference -ExclusionPath "$env:USERPROFILE\go"
+          Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\go-build"
+          Add-MpPreference -ExclusionPath "$env:RUNNER_TEMP"
+
       - uses: actions/checkout@v4
         with:
           persist-credentials: false

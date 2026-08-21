@@ -126,6 +126,7 @@ func entry(t *testing.T, cat *domain.ResourceCatalog, path string) domain.Catalo
 }
 
 func TestResourcesSyncFromScratchMatchesFixturesAndIsIdempotent(t *testing.T) {
+	t.Parallel()
 	_, repo := fivemRepo(t)
 	ctx := context.Background()
 	out, err := repo.ResourcesSync(ctx, ResourcesSyncInput{})
@@ -201,6 +202,7 @@ func TestResourcesSyncFromScratchMatchesFixturesAndIsIdempotent(t *testing.T) {
 }
 
 func TestResourcesSyncPreservesOperatorEditsMissingAndNew(t *testing.T) {
+	t.Parallel()
 	g, repo := fivemRepo(t)
 	ctx := context.Background()
 	if _, err := repo.ResourcesSync(ctx, ResourcesSyncInput{}); err != nil {
@@ -297,6 +299,7 @@ func mustCat(t *testing.T, repo *Repo) *domain.ResourceCatalog {
 }
 
 func TestResourcesSyncFromCfgEnablesOnlyListedNames(t *testing.T) {
+	t.Parallel()
 	g, repo := fivemRepo(t)
 	ctx := context.Background()
 	g.WriteFile("cfg/server.cfg", []byte("ensure chat\nexec extra.cfg\nstop anticheat\nensure nosuch\n"))
@@ -351,6 +354,7 @@ func must(b []byte, err error) []byte {
 }
 
 func TestResourcesSet(t *testing.T) {
+	t.Parallel()
 	_, repo := fivemRepo(t)
 	ctx := context.Background()
 	if _, err := repo.ResourcesSet(ctx, ResourcesSetInput{ResourcePath: "chat", Activation: domain.ActivationEnabled}); !errors.Is(err, ErrResourceNotFound) {
@@ -420,6 +424,7 @@ func TestResourcesSet(t *testing.T) {
 }
 
 func TestResourcesValidateReleaseStyle(t *testing.T) {
+	t.Parallel()
 	g, repo := fivemRepo(t)
 	ctx := context.Background()
 	// No catalog yet: every discovered resource is undeclared.
@@ -533,6 +538,7 @@ func hasProblem(out *ResourcesValidateOutput, path, field string) bool {
 }
 
 func TestResourcesSandboxViolationFailsSyncAndValidate(t *testing.T) {
+	t.Parallel()
 	g, repo := fivemRepo(t)
 	ctx := context.Background()
 	if _, err := repo.ResourcesSync(ctx, ResourcesSyncInput{}); err != nil {
@@ -564,6 +570,7 @@ func TestResourcesSandboxViolationFailsSyncAndValidate(t *testing.T) {
 }
 
 func TestResourcesRequireFiveMProfile(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t) // generic profile
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -591,6 +598,7 @@ func TestResourcesRequireFiveMProfile(t *testing.T) {
 }
 
 func TestResourcesSyncSingleLayout(t *testing.T) {
+	t.Parallel()
 	gittest.RequireGit(t)
 	g := gittest.InitRepo(t)
 	copyTree(t, filepath.Join(fivemFixtures, "single-resource"), g.Root)
@@ -607,6 +615,7 @@ func TestResourcesSyncSingleLayout(t *testing.T) {
 }
 
 func TestResourcesSyncSerializesOnCatalogLock(t *testing.T) {
+	t.Parallel()
 	g, repo := fivemRepo(t)
 	ctx := context.Background()
 	other := openTest(t, g, t.TempDir())

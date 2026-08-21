@@ -21,6 +21,7 @@ import (
 // A chunk that rotted in place at its recorded size therefore passed, and the
 // working file was destroyed against it.
 func TestUnloadProvesSoleCopiesEvenWhenTheManifestMustBeRebuilt(t *testing.T) {
+	t.Parallel()
 	repo, content, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, path)
@@ -107,6 +108,7 @@ func emptyRemote(t *testing.T, repo *Repo) {
 // rotted in place at its recorded size passed, and the file was destroyed
 // against it.
 func TestUnloadProvesSoleCopiesWhenTheFileFailsTheFirstCheck(t *testing.T) {
+	t.Parallel()
 	repo, content, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, path)
@@ -199,6 +201,7 @@ func (f *failingReader) Read(p []byte) (int, error) {
 // place could be accepted on the strength of an I/O error that said nothing
 // about it.
 func TestProveAgainstDoesNotMistakeAReadFailureForADivergentFile(t *testing.T) {
+	t.Parallel()
 	repo, content, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, path)
@@ -228,6 +231,7 @@ func TestProveAgainstDoesNotMistakeAReadFailureForADivergentFile(t *testing.T) {
 // TestProveAgainstStillReportsAShortFileAsDivergent keeps the distinction
 // honest in the other direction: a file that ends early really has changed.
 func TestProveAgainstStillReportsAShortFileAsDivergent(t *testing.T) {
+	t.Parallel()
 	repo, content, _ := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, "big.bin")
@@ -266,6 +270,7 @@ func (e *erroringReader) Read(p []byte) (int, error) {
 // "nothing follows" let unload replace a file whose length it had not
 // established, destroying whatever came after the part it did check.
 func TestProveAgainstDoesNotTakeAFailedReadAsProofOfLength(t *testing.T) {
+	t.Parallel()
 	repo, content, _ := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, "big.bin")
@@ -320,6 +325,7 @@ func (s *stallingReader) Read(p []byte) (int, error) {
 // trailing content must be refused even when the read that would have found it
 // first returns nothing without failing.
 func TestProveAgainstDoesNotTakeANoProgressReadAsTheEndOfTheFile(t *testing.T) {
+	t.Parallel()
 	repo, content, _ := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, "big.bin")

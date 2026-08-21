@@ -43,6 +43,7 @@ func testDeployment() domain.Deployment {
 }
 
 func TestAgentStateRoundTrip(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "state", "agent.db")
 	db, err := OpenAgent(ctx, path, Options{Create: true, Target: "dev", InstalledVersion: "test"})
@@ -145,6 +146,7 @@ func TestAgentStateRoundTrip(t *testing.T) {
 }
 
 func TestAgentStateRejectsWrongTarget(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "agent.db")
 	db, err := OpenAgent(ctx, path, Options{Create: true, Target: "dev"})
@@ -161,6 +163,7 @@ func TestAgentStateRejectsWrongTarget(t *testing.T) {
 }
 
 func TestAgentStateRejectsInvalidDeploymentBeforeWrite(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	db, err := OpenAgent(ctx, filepath.Join(t.TempDir(), "agent.db"), Options{Create: true, Target: "dev"})
 	if err != nil {

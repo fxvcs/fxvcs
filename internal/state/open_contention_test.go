@@ -23,6 +23,7 @@ import (
 // Two ordinary fxvcs processes are enough to hit it: a command and the Git
 // filter process, or two terminals.
 func TestConcurrentOpenDoesNotReportAHealthyDatabaseAsCorrupt(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	dir := t.TempDir()
 	path := filepath.Join(dir, "state.db")

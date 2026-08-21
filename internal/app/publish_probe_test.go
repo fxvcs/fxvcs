@@ -17,6 +17,7 @@ import (
 // happening. The planner's answer is the one to keep — it is bulk — so the
 // uploader must not re-ask what it was already told.
 func TestPublishAsksEachRemoteOncePerObject(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()

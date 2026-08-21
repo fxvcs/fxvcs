@@ -52,6 +52,7 @@ func setupManyAssets(t *testing.T, n, size int) (*Repo, []string) {
 // path locks as though a single operation were taking several out of order,
 // and refused them.
 func TestConcurrentPathsKeepTheirOrderAndTheirLocks(t *testing.T) {
+	t.Parallel()
 	repo, names := setupManyAssets(t, 24, 64<<10)
 	ctx := context.Background()
 
@@ -95,6 +96,7 @@ func assertOrderedAndComplete(t *testing.T, what string, outs []PathOutcome, nam
 // synchronisation of their own, so fanning out makes serialising the events
 // this package's job.
 func TestConcurrentPathsDeliverProgressOneEventAtATime(t *testing.T) {
+	t.Parallel()
 	repo, _ := setupManyAssets(t, 16, 64<<10)
 	ctx := context.Background()
 	var mu sync.Mutex

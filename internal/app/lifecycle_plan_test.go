@@ -9,6 +9,7 @@ import (
 )
 
 func TestDiffComponentResourcesProducesDeterministicTypedOperations(t *testing.T) {
+	t.Parallel()
 	previous := domain.Release{Spec: domain.ReleaseSpec{
 		Components: []domain.ReleaseComponent{{RepositoryID: "repo-a", Commit: "same"}, {RepositoryID: "repo-b", Commit: "old"}},
 		Resources: []domain.ReleaseResource{
@@ -31,6 +32,7 @@ func TestDiffComponentResourcesProducesDeterministicTypedOperations(t *testing.T
 }
 
 func TestDiffComponentResourcesRequiresFullRestartForHostOwnedChanges(t *testing.T) {
+	t.Parallel()
 	previous := domain.Release{Spec: domain.ReleaseSpec{Resources: []domain.ReleaseResource{{Source: domain.ResourceSourceRuntime, Name: "sessionmanager", Activation: domain.ActivationEnabled}}}}
 	next := previous
 	next.Spec.Resources = append([]domain.ReleaseResource(nil), previous.Spec.Resources...)
@@ -42,6 +44,7 @@ func TestDiffComponentResourcesRequiresFullRestartForHostOwnedChanges(t *testing
 }
 
 func TestSameNonReleaseInputsRequiresFullRestartForEnvironmentOrSecrets(t *testing.T) {
+	t.Parallel()
 	base := domain.RealizationInputs{ReleaseName: "v1", ReleaseDigest: "one", SourceSetDigest: "one", EnvironmentName: "dev", EnvironmentRevision: 1, SecretVersions: map[string]string{"x": "v1"}}
 	next := base
 	next.ReleaseName, next.ReleaseDigest, next.SourceSetDigest = "v2", "two", "two"

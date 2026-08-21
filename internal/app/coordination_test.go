@@ -250,6 +250,7 @@ func createInput(name string) ReleaseCreateInput {
 // ---------------------------------------------------------------------------
 
 func TestReleaseIsReproducibleAfterComponentBranchesAdvance(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": "", "bank": ""}})
 	addComponent(t, co, maps, StackAddInput{})
@@ -299,6 +300,7 @@ func TestReleaseIsReproducibleAfterComponentBranchesAdvance(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestExistingReleaseCannotBeSilentlyOverwritten(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": ""}})
 	addComponent(t, co, maps, StackAddInput{})
@@ -350,6 +352,7 @@ func TestExistingReleaseCannotBeSilentlyOverwritten(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestMissingRepositoryAccessFailsClosed(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": ""}})
 	addComponent(t, co, maps, StackAddInput{})
@@ -372,6 +375,7 @@ func TestMissingRepositoryAccessFailsClosed(t *testing.T) {
 }
 
 func TestDuplicateAndOverlappingMountsFailClosed(t *testing.T) {
+	t.Parallel()
 	for _, tc := range []struct{ name, first, second, want string }{
 		{"identical", "resources/[shared]", "resources/[shared]", "already used"},
 		{"nested", "resources/[shared]", "resources/[shared]/[inner]", "overlaps"},
@@ -394,6 +398,7 @@ func TestDuplicateAndOverlappingMountsFailClosed(t *testing.T) {
 }
 
 func TestMismatchedRepositoryIDFailsClosed(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": ""}})
 	addComponent(t, co, maps, StackAddInput{})
@@ -424,6 +429,7 @@ func TestMismatchedRepositoryIDFailsClosed(t *testing.T) {
 }
 
 func TestMissingObjectsFailBeforeRelease(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	store := t.TempDir()
 	maps := newComponentWithStorage(t, "maps", store)
@@ -452,6 +458,7 @@ func TestMissingObjectsFailBeforeRelease(t *testing.T) {
 }
 
 func TestUnreachableStorageIsUnverifiableNotAbsent(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	maps := newComponentWithStorage(t, "maps", t.TempDir())
 	addComponent(t, co, maps, StackAddInput{})
@@ -483,6 +490,7 @@ func TestUnreachableStorageIsUnverifiableNotAbsent(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestComponentLayoutFixtures(t *testing.T) {
+	t.Parallel()
 	t.Run("single resource mounts inside a category", func(t *testing.T) {
 		co := coordFixture(t)
 		inv := newComponent(t, componentSpec{
@@ -582,6 +590,7 @@ func TestComponentLayoutFixtures(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestPendingResourceFailsBeforeRelease(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": ""}, activation: domain.ActivationPending})
 	addComponent(t, co, maps, StackAddInput{})
@@ -604,6 +613,7 @@ func TestPendingResourceFailsBeforeRelease(t *testing.T) {
 }
 
 func TestUndeclaredAndMissingResourcesFailBeforeRelease(t *testing.T) {
+	t.Parallel()
 	t.Run("a resource in the tree that the list does not declare", func(t *testing.T) {
 		co := coordFixture(t)
 		maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": ""}})
@@ -644,6 +654,7 @@ func TestUndeclaredAndMissingResourcesFailBeforeRelease(t *testing.T) {
 }
 
 func TestOrderingCycleFailsBeforeRelease(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{
 		name:      "maps",
@@ -661,6 +672,7 @@ func TestOrderingCycleFailsBeforeRelease(t *testing.T) {
 }
 
 func TestDescriptorIsSnapshottedAndLaterLayoutChangesFailClosed(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	inv := newComponent(t, componentSpec{
 		name: "inventory", layout: domain.LayoutSingle, resourceName: "inventory",
@@ -735,6 +747,7 @@ func TestDescriptorIsSnapshottedAndLaterLayoutChangesFailClosed(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestStackInitCreatesAdoptsAndNeverCommits(t *testing.T) {
+	t.Parallel()
 	gittest.RequireGit(t)
 	repo := gittest.InitRepo(t)
 	ctx := context.Background()
@@ -767,6 +780,7 @@ func TestStackInitCreatesAdoptsAndNeverCommits(t *testing.T) {
 }
 
 func TestStackInitRefusesAComponentRepository(t *testing.T) {
+	t.Parallel()
 	gittest.RequireGit(t)
 	repo := gittest.InitRepo(t)
 	repo.WriteFile(".fxvcs/repository.yaml", []byte("apiVersion: fxvcs.dev/v1alpha1\nkind: Repository\n"))
@@ -781,6 +795,7 @@ func TestStackInitRefusesAComponentRepository(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestCoordinationOverridesRecordTheirProvenance(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": "", "bank": ""}})
 	addComponent(t, co, maps, StackAddInput{})
@@ -810,6 +825,7 @@ spec:
 }
 
 func TestRediscoveryIsIdempotentAndCannotMutateAnExistingRelease(t *testing.T) {
+	t.Parallel()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": "", "bank": ""}})
 	addComponent(t, co, maps, StackAddInput{})
@@ -865,6 +881,7 @@ func planString(rows []PlannedResource) string {
 // ---------------------------------------------------------------------------
 
 func TestReleaseExportImportPreservesIdentity(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	source := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": ""}})
@@ -902,6 +919,7 @@ func TestReleaseExportImportPreservesIdentity(t *testing.T) {
 }
 
 func TestTargetAndEnvironmentDesiredState(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": ""}})
@@ -966,6 +984,7 @@ func TestTargetAndEnvironmentDesiredState(t *testing.T) {
 }
 
 func TestReleaseNotesReportSourceEqualitySeparately(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": "", "bank": ""}})
@@ -992,6 +1011,7 @@ func TestReleaseNotesReportSourceEqualitySeparately(t *testing.T) {
 }
 
 func TestRuntimeResourcesSyncLeavesAmbiguousEntriesPending(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	co := coordFixture(t)
 	maps := newComponent(t, componentSpec{name: "maps", resources: map[string]string{"city-map": ""}})

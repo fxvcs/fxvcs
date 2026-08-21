@@ -13,6 +13,7 @@ import (
 // TestLoadHealsACorruptCachedManifest: the manifest is an object like any
 // other, and a damaged one must be re-fetched rather than bricking the asset.
 func TestLoadHealsACorruptCachedManifest(t *testing.T) {
+	t.Parallel()
 	repo, content, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, path)
@@ -44,6 +45,7 @@ func TestLoadHealsACorruptCachedManifest(t *testing.T) {
 // its pending-publication marker, and an unpinned pending object is one the
 // cache may prune while the ledger still says it is unpublished.
 func TestManifestHealKeepsThePin(t *testing.T) {
+	t.Parallel()
 	repo, _, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, path)
@@ -70,6 +72,7 @@ func TestManifestHealKeepsThePin(t *testing.T) {
 // what it finds and then reports the repository healthy has destroyed the
 // evidence and told the operator nothing happened.
 func TestVerifyReportsCorruptionInsteadOfRepairingIt(t *testing.T) {
+	t.Parallel()
 	repo, _, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, path)

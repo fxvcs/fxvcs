@@ -13,6 +13,7 @@ import (
 // A literal directory argument selects every managed entry beneath it and is
 // not itself reported as missing (nor escalated to an operation error).
 func TestManagedEntriesDirectoryArgument(t *testing.T) {
+	t.Parallel()
 	gittest.RequireGit(t)
 	r := gittest.InitRepo(t)
 	r.WriteFile(".fxvcs/repository.yaml", []byte(repoYAML))

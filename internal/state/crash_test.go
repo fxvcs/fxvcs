@@ -33,6 +33,7 @@ func samplePointer(oid string) []byte {
 // index pointer is recorded as hydrated-modified and left byte-for-byte and
 // mtime-identical.
 func TestRebuildFromFactsNeverWritesDirtyFile(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	git := t.TempDir()
 	work := t.TempDir()
@@ -132,6 +133,7 @@ func TestRebuildFromFactsNeverWritesDirtyFile(t *testing.T) {
 }
 
 func TestOperationJournalInterruptedAndReconcile(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	p := filepath.Join(t.TempDir(), "state.db")
 	db, err := Open(ctx, p, testOpts(true))
@@ -201,6 +203,7 @@ func TestOperationJournalInterruptedAndReconcile(t *testing.T) {
 }
 
 func TestInterruptedOperationFixture(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	p := loadFixtureDB(t, filepath.Join(fixtureDir(t, "crash", "state-db"), "interrupted-operation.sql"), "state.db")
 	// The fixture predates the current schema, so opening it migrates.
@@ -219,6 +222,7 @@ func TestInterruptedOperationFixture(t *testing.T) {
 }
 
 func TestInterruptedMigrationFixture(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	fx := filepath.Join(fixtureDir(t, "crash", "state-db"), "interrupted-migration.sql")
 	// Without Migrate: refused, guidance resume, file untouched.
@@ -260,6 +264,7 @@ func TestInterruptedMigrationFixture(t *testing.T) {
 }
 
 func TestLedger(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	p := Locate(t.TempDir(), "").PublicationDB
 	l, err := OpenLedger(ctx, p, testOpts(true))
@@ -330,6 +335,7 @@ func TestLedger(t *testing.T) {
 // production registries: a v0 (empty) file reaches the current schema and the
 // pre-migration backup is kept for the authoritative ledger.
 func TestMigrateFileOnRealSchemas(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	p := loadFixtureDB(t, filepath.Join(fixtureDir(t, "upgrade", "publication-db"), "v0.sql"), "publication.db")
 	rep, err := migrate.MigrateFile(ctx, p, PublicationMigrations(), migrate.FileOptions{KeepBackup: true, Run: migrate.RunOptions{Now: fixedClock}})

@@ -23,6 +23,7 @@ import (
 // Run with -race; without it this test still exercises the branch but can only
 // fail loudly rather than precisely.
 func TestConcurrentPathsDoNotShareOneLockSequence(t *testing.T) {
+	t.Parallel()
 	repo, names := setupManyAssets(t, 24, 32<<10)
 	ctx := context.Background()
 	if outs, err := repo.Dehydrate(ctx, Selection{}, nil); err != nil {

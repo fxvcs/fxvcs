@@ -49,6 +49,7 @@ func setupUnloadable(t *testing.T, size int) (*Repo, []byte, string) {
 // the working file destroyed against it anyway. Proving the working file
 // means the damaged entry gets replaced with the bytes that are still there.
 func TestUnloadRepairsADamagedCacheEntryFromTheWorkingFile(t *testing.T) {
+	t.Parallel()
 	repo, content, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 
@@ -104,6 +105,7 @@ func TestUnloadRepairsADamagedCacheEntryFromTheWorkingFile(t *testing.T) {
 // TestUnloadRefusesAWorkingFileThatDoesNotMatchItsPointer keeps the other half
 // of the promise: proving the file is not the same as trusting it.
 func TestUnloadRefusesAWorkingFileThatDoesNotMatchItsPointer(t *testing.T) {
+	t.Parallel()
 	repo, content, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	modified := append([]byte(nil), content...)
@@ -131,6 +133,7 @@ func TestUnloadRefusesAWorkingFileThatDoesNotMatchItsPointer(t *testing.T) {
 // TestUnloadRestoresAnObjectMissingFromTheCache covers the other repair: the
 // cached copy is gone entirely rather than damaged.
 func TestUnloadRestoresAnObjectMissingFromTheCache(t *testing.T) {
+	t.Parallel()
 	repo, _, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, path)
@@ -167,6 +170,7 @@ func TestUnloadRestoresAnObjectMissingFromTheCache(t *testing.T) {
 // is stored there, which is correct for immutable content and wrong for
 // repair.
 func TestCachePutVerifiedReplacesADamagedEntry(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	c, err := cache.Open(dir)
 	if err != nil {

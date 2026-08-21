@@ -54,6 +54,7 @@ func openTest(t testing.TB, r *gittest.Repo, cacheDir string) *Repo {
 }
 
 func TestOpenPreflightAndPaths(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	if repo.Domain != "domain_test_01" || repo.Root == "" || repo.GitDir == "" {
@@ -79,6 +80,7 @@ func TestOpenPreflightAndPaths(t *testing.T) {
 }
 
 func TestStorageBindingPublishAndPruneProtection(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -239,6 +241,7 @@ func TestStorageBindingPublishAndPruneProtection(t *testing.T) {
 }
 
 func TestIngestIsDeterministicAndIdempotent(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -270,6 +273,7 @@ func TestIngestIsDeterministicAndIdempotent(t *testing.T) {
 // A remote added after objects were published (and settled, and evicted from
 // the cache) still receives them on the next publish.
 func TestPublishToRemoteAddedLater(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()

@@ -44,6 +44,7 @@ func statusOf(t *testing.T, repo *Repo, path string) PathStatus {
 // replacing a file whose only copy is the one on disk. So for every asset
 // state, what Status advertises has to be exactly what the operation then does.
 func TestAdvertisedActionsMatchWhatTheOperationsDo(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -135,6 +136,7 @@ func actedWord(acted bool) string {
 // TestPublishActionTracksTheLedger: an interface should offer "upload" only
 // when there is something to upload, and say why when there is not.
 func TestPublishActionTracksTheLedger(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -172,6 +174,7 @@ func TestPublishActionTracksTheLedger(t *testing.T) {
 // engine is worse than no control at all: the bytes it throws away are in no
 // commit and no object store, and there is nothing to undo it with.
 func TestDiscardIsTheOnlyWayBackAndSaysSoFirst(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -259,6 +262,7 @@ func TestDiscardIsTheOnlyWayBackAndSaysSoFirst(t *testing.T) {
 // the placeholders, so a texture that grew by 40 MB is one line added and one
 // removed. The index-side size makes the real number available.
 func TestStatusMeasuresHowMuchAnAssetChanged(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -327,6 +331,7 @@ func ptrTo(v int64) *int64 { return &v }
 // with no local state: a placeholder reported as missing, or a modified file
 // reported as clean, which is the reading that gets bytes overwritten.
 func TestScopedStatusAgreesWithWholeRepositoryStatus(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()

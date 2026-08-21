@@ -18,6 +18,7 @@ import (
 // selection uploads what those assets need and leaves the rest pending, and the
 // action for each asset afterwards says so.
 func TestPublishSelectionMakesThePerAssetActionActionable(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()

@@ -87,6 +87,7 @@ func loadFixtureDB(t *testing.T, sqlPath, name string) string {
 }
 
 func TestLocate(t *testing.T) {
+	t.Parallel()
 	p := Locate(filepath.Join("repo", ".git", "worktrees", "wt"), filepath.Join("repo", ".git"))
 	if p.StateDB != filepath.Join("repo", ".git", "worktrees", "wt", "fxvcs", "state.db") ||
 		p.PublicationDB != filepath.Join("repo", ".git", "fxvcs", "publication.db") ||
@@ -101,6 +102,7 @@ func TestLocate(t *testing.T) {
 }
 
 func TestSchemaVersionsAgreeWithFormat(t *testing.T) {
+	t.Parallel()
 	if HydrationMigrations().Latest() != format.HydrationStateSchema {
 		t.Fatalf("hydration chain reaches %d, format declares %d", HydrationMigrations().Latest(), format.HydrationStateSchema)
 	}
@@ -110,6 +112,7 @@ func TestSchemaVersionsAgreeWithFormat(t *testing.T) {
 }
 
 func TestOpenCreateRoundTrip(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	p := Locate(t.TempDir(), "").StateDB
 	db, err := Open(ctx, p, testOpts(true))
@@ -173,6 +176,7 @@ func TestOpenCreateRoundTrip(t *testing.T) {
 }
 
 func TestPathRowConditions(t *testing.T) {
+	t.Parallel()
 	fp := Fingerprint{Size: 1, MtimeNS: 1}
 	cases := []struct {
 		row  PathRow
@@ -193,6 +197,7 @@ func TestPathRowConditions(t *testing.T) {
 }
 
 func TestOpenRefusesNewerSchemaBeforeWrite(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	for _, kind := range []string{"state-db", "publication-db"} {
 		t.Run(kind, func(t *testing.T) {
@@ -222,6 +227,7 @@ func TestOpenRefusesNewerSchemaBeforeWrite(t *testing.T) {
 }
 
 func TestOpenCorruptDatabase(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	garbage := fixtureDir(t, "crash", "not-a-database.txt")
 	cases := []struct {
@@ -280,6 +286,7 @@ func TestOpenCorruptDatabase(t *testing.T) {
 }
 
 func TestOpenWrongKindAndOlderSchema(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	p := filepath.Join(t.TempDir(), "state.db")
 	db, err := Open(ctx, p, testOpts(true))
@@ -305,6 +312,7 @@ func TestOpenWrongKindAndOlderSchema(t *testing.T) {
 // schema deterministically. v<current>.sql is (re)generated from code with
 // -update; older vN.sql fixtures are frozen history.
 func TestGoldenUpgrade(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	kinds := []struct {
 		dir     string
@@ -469,6 +477,7 @@ func dumpPath(t *testing.T, p string) string {
 }
 
 func TestFingerprint(t *testing.T) {
+	t.Parallel()
 	p := filepath.Join(t.TempDir(), "f.bin")
 	if err := os.WriteFile(p, []byte("hello"), 0o644); err != nil {
 		t.Fatal(err)
@@ -496,6 +505,7 @@ func TestFingerprint(t *testing.T) {
 // what a full read would have said about those paths, including across the
 // query batch boundary, and must not invent rows for paths it has none for.
 func TestListPathsMatchesList(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	db, err := Open(ctx, filepath.Join(t.TempDir(), "state.db"), testOpts(true))
 	if err != nil {

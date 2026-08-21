@@ -7,6 +7,7 @@ import (
 )
 
 func TestPublicationSummaryUsesRequiredRemoteCoverage(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	l, err := OpenLedger(ctx, filepath.Join(t.TempDir(), "publication.db"), testOpts(true))
 	if err != nil {
@@ -68,6 +69,7 @@ func TestPublicationSummaryUsesRequiredRemoteCoverage(t *testing.T) {
 }
 
 func TestPublicationSummaryAndReferrersManyAreEmptyWithoutRows(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	l, err := OpenLedger(ctx, filepath.Join(t.TempDir(), "publication.db"), testOpts(true))
 	if err != nil {
@@ -86,6 +88,7 @@ func TestPublicationSummaryAndReferrersManyAreEmptyWithoutRows(t *testing.T) {
 }
 
 func TestReferrersManyMatchesSingleObjectOrdering(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	l, err := OpenLedger(ctx, filepath.Join(t.TempDir(), "publication.db"), testOpts(true))
 	if err != nil {

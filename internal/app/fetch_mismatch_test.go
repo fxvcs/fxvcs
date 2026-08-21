@@ -41,6 +41,7 @@ func (w *wrongObjectStore) Get(ctx context.Context, domain, digest string) (io.R
 // pending publication and may have no copy anywhere else. Nothing the remote
 // says should be able to remove a local object nobody asked about.
 func TestFetchingTheWrongObjectDoesNotTouchTheOneItReturned(t *testing.T) {
+	t.Parallel()
 	repo, _, path := setupUnloadable(t, 3<<20)
 	ctx := context.Background()
 	ptr := indexPointerFor(t, repo, path)

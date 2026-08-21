@@ -16,6 +16,7 @@ var updateCfgGolden = flag.Bool("update", false, "rewrite spec/fixtures/fivem/cf
 const cfgFixtures = "../../spec/fixtures/fivem/cfg"
 
 func TestParseServerCfgFixture(t *testing.T) {
+	t.Parallel()
 	got, err := ParseServerCfg(filepath.Join(cfgFixtures, "server", "server.cfg"))
 	if err != nil {
 		t.Fatal(err)
@@ -54,6 +55,7 @@ func TestParseServerCfgFixture(t *testing.T) {
 }
 
 func TestParseServerCfgRefusals(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		file, reason string
 	}{
@@ -73,6 +75,7 @@ func TestParseServerCfgRefusals(t *testing.T) {
 }
 
 func TestParseServerCfgDepthLimit(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	for i := 0; i <= CfgMaxExecDepth+1; i++ {
 		body := "ensure r" + string(rune('a'+i%26)) + "\nexec " + "l" + itoa(i+1) + ".cfg\n"
@@ -88,6 +91,7 @@ func TestParseServerCfgDepthLimit(t *testing.T) {
 }
 
 func TestCfgTokens(t *testing.T) {
+	t.Parallel()
 	cases := map[string][]string{
 		`ensure a b`:                     {"ensure", "a", "b"},
 		`  start "x y" 'z'  # c`:         {"start", "x y", "z"},

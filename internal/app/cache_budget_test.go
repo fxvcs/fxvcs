@@ -8,6 +8,7 @@ import (
 // TestCacheBudgetSkipsMeasuringUntilItCouldMatter: measuring the cache means
 // walking every object in it, and the check runs after every ingested file.
 func TestCacheBudgetSkipsMeasuringUntilItCouldMatter(t *testing.T) {
+	t.Parallel()
 	var b cacheBudget
 	const limit = 1000
 	if !b.mustMeasure(0, limit) {
@@ -26,6 +27,7 @@ func TestCacheBudgetSkipsMeasuringUntilItCouldMatter(t *testing.T) {
 // keep the estimate fresh forever, or growth by another process on the same
 // host would never be noticed.
 func TestCacheBudgetTTLIsNotDefeatedByACallLoop(t *testing.T) {
+	t.Parallel()
 	var b cacheBudget
 	b.measured(400, 0)
 	for i := 0; i < 100; i++ {
@@ -51,6 +53,7 @@ func TestCacheBudgetTTLIsNotDefeatedByACallLoop(t *testing.T) {
 // per file, to re-derive an answer that cannot change until those objects are
 // published.
 func TestCacheBudgetStopsReMeasuringOnThePinnedFloor(t *testing.T) {
+	t.Parallel()
 	var b cacheBudget
 	const limit = 1000
 	// Pruning ran and left 5000 bytes, all pinned.
@@ -74,6 +77,7 @@ func TestCacheBudgetStopsReMeasuringOnThePinnedFloor(t *testing.T) {
 // with a frozen clock would switch the bound off and let the cache exceed its
 // budget without limit.
 func TestCacheBudgetUsesTheWallClock(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	frozen := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
 	repo := openTest(t, r, cacheDir)

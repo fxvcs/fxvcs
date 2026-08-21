@@ -10,6 +10,7 @@ import (
 // A Go test binary must never be installed as a real launcher: only temp
 // destinations are allowed while tests run.
 func TestTestBinaryLauncherGuard(t *testing.T) {
+	t.Parallel()
 	exe, _ := os.Executable()
 	if !isTestBinary(exe) {
 		t.Skip("not running as a test binary")

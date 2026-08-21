@@ -64,6 +64,7 @@ func (b *batchingStore) BatchHas(ctx context.Context, domain string, digests []s
 // seconds of nothing happening. The batched form must ask a number of times
 // that does not grow with the number of assets.
 func TestPublicationCheckDoesNotScaleRoundTripsWithAssets(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -111,6 +112,7 @@ func TestPublicationCheckDoesNotScaleRoundTripsWithAssets(t *testing.T) {
 // TestPublicationCheckAgreesWithThePerPointerForm keeps the fast path honest:
 // batching may not change any answer.
 func TestPublicationCheckAgreesWithThePerPointerForm(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -243,6 +245,7 @@ func (s *slowStore) Get(ctx context.Context, domain, digest string) (io.ReadClos
 // selection of N assets cost N round trips in series. The fetches must now
 // overlap, while the writes stay one at a time.
 func TestHydrateFetchesAcrossFilesConcurrently(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()

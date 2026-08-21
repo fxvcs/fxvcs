@@ -15,6 +15,8 @@ _.path = ["{{config_root}}/bin"]
 
 [tasks.fmt-check]
 description = "Fail if any Go file needs gofmt"
+# shell: sh syntax must not fall to cmd.exe on Windows (mise's default there).
+shell = "bash -c"
 run = 'out="$(gofmt -l . | grep -v "^vendor/" || true)"; if [ -n "$out" ]; then echo "gofmt needed:"; echo "$out"; exit 1; fi'
 
 [tasks.fmt]
@@ -46,6 +48,7 @@ run = 'go test -short ./...'
 
 [tasks.build]
 description = "Build bin/fxvcs with sdk.Version=$VERSION (default: git describe of a tag, else 0.0.0-dev+<commit>)"
+shell = "bash -c"
 run = '''
 # The version has to parse as semver: it drives the upgrade gate and every
 # format-compatibility check, and a binary carrying anything else refuses to
@@ -70,6 +73,7 @@ go build -trimpath -ldflags "-X fxvcs.dev/fxvcs/sdk.Version=$v" -o "bin/fxvcs$ex
 
 [tasks.install]
 description = "Install fxvcs into $GOPATH/bin (not mise's GOBIN) so it works outside this repo"
+shell = "bash -c"
 run = '''
 # Semver or nothing: see the note in tasks.build. `--always` yields a bare
 # commit hash, which is not empty and not semver, so the old fallback for an
@@ -117,6 +121,7 @@ run = ['go mod tidy', 'git diff --exit-code -- go.mod go.sum']
 
 [tasks.fixtures-update]
 description = "Regenerate golden fixtures (only packages that declare -update); review the diff afterwards"
+shell = "bash -c"
 run = '''
 for p in ./sdk ./internal/state ./internal/profile/fivem/discovery ./internal/filter; do
   echo "== $p"; go test "$p" -update || exit 1
@@ -130,4 +135,5 @@ depends = ["fmt-check", "vet", "lint", "test"]
 
 [tasks.clean]
 description = "Remove bin/ and test artifacts"
+shell = "bash -c"
 run = 'rm -rf bin coverage.* ./*.test ./*.out'

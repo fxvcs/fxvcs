@@ -133,6 +133,7 @@ func overwriteCached(t *testing.T, c *cache.Cache, domainID, digest string, data
 }
 
 func TestHydrateDehydrateStatusRoundTrip(t *testing.T) {
+	t.Parallel()
 	f := ckSetup(t)
 	ctx := context.Background()
 	asset := ckRandom(3<<20+123, 1)
@@ -490,6 +491,7 @@ func TestHydrateAbortsWhenPremiseMoves(t *testing.T) {
 }
 
 func TestVerifyReportsIntegrityAndAvailability(t *testing.T) {
+	t.Parallel()
 	f := ckSetup(t)
 	ctx := context.Background()
 	asset := ckRandom(70000, 4)
@@ -557,6 +559,7 @@ func TestVerifyReportsIntegrityAndAvailability(t *testing.T) {
 }
 
 func TestDoctorDetectsAndRepairFixesOnlySafeState(t *testing.T) {
+	t.Parallel()
 	f := ckSetup(t)
 	ctx := context.Background()
 	launcher := filepath.Join(t.TempDir(), "fxvcs")
@@ -778,6 +781,7 @@ func TestLockHolderHelper(t *testing.T) {
 }
 
 func TestConcurrentHydrateSerializesOnPathLock(t *testing.T) {
+	t.Parallel()
 	f := ckSetup(t)
 	ctx := context.Background()
 	asset := ckRandom(20000, 6)

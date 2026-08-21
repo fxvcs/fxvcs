@@ -13,6 +13,7 @@ import (
 // between files that only resemble each other. They scale differently, so a
 // single number would hide which one a repository is actually getting.
 func TestStorageStatsSeparatesTheTwoSavings(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
@@ -108,6 +109,7 @@ func TestStorageStatsSeparatesTheTwoSavings(t *testing.T) {
 // repository's worth of metadata over the network, and must say when its
 // answer is therefore incomplete.
 func TestStorageStatsDoesNotFetchByDefault(t *testing.T) {
+	t.Parallel()
 	r, cacheDir := testRepo(t)
 	repo := openTest(t, r, cacheDir)
 	ctx := context.Background()
