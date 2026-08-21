@@ -1,0 +1,26 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Repository
+metadata:
+  repositoryID: repo_inventory_01
+  storageDomainID: domain_inventory_01
+  name: inventory
+spec:
+  profile: fivem
+  minimumFXVCSVersion: 0.1.0
+  gitIntegrationVersion: 1
+  sourceRoot: .
+  layout: single
+  resourceName: inventory
+  storage:
+    remotes:
+      - name: primary
+        type: s3
+        endpoint: https://objects.example.com
+        bucket: fxvcs-assets
+        prefix: repositories/domain_inventory_01/
+        addressing: virtual-host
+        requiredForPublication: true
+      - name: mirror
+        type: filesystem
+        prefix: mirrors/domain_inventory_01/
+        requiredForPublication: false

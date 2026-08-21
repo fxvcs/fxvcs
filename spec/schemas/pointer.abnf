@@ -1,0 +1,41 @@
+; FXVCS pointer, format version 1 (RFC 5234 ABNF)
+;
+; The pointer is the exact byte content stored in Git for a managed asset.
+; It is deterministic: Decode(Encode(p)) == p and Encode(Decode(b)) == b for
+; every accepted b. Git attributes carry `-text` so these LF bytes are never
+; rewritten. Total length MUST NOT exceed 1024 bytes.
+
+pointer       = version-line domain-line encoding-line manifest-line oid-line size-line
+
+version-line  = "version https://fxvcs.dev/pointer/v1" LF
+domain-line   = "domain " domain-id LF
+encoding-line = "encoding " encoding-id LF
+manifest-line = "manifest " digest LF
+oid-line      = "oid " digest LF
+size-line     = "size " size LF
+
+; keys after the version line appear exactly once, in ascending byte order:
+; domain < encoding < manifest < oid < size
+
+domain-id     = "domain_" id-start 0*62id-char
+id-start      = ALPHA / DIGIT
+id-char       = ALPHA / DIGIT / "_" / "-"
+
+encoding-id   = LOWER 0*31( LOWER / DIGIT / "-" ) "/" NZDIGIT 0*3DIGIT
+                ; e.g. "whole/1", "cdc-fastcdc/1"
+
+digest        = "sha256:" 64HEXLOWER
+
+size          = "0" / ( NZDIGIT *DIGIT )
+                ; decimal, no leading zeros, no sign, fits in int64
+
+LOWER         = %x61-7A          ; a-z
+NZDIGIT       = %x31-39          ; 1-9
+HEXLOWER      = DIGIT / %x61-66  ; 0-9a-f
+LF            = %x0A
+ALPHA         = %x41-5A / %x61-7A
+DIGIT         = %x30-39
+
+; Forbidden anywhere: CR (%x0D), BOM, comments, tabs, leading/trailing
+; whitespace, blank lines, repeated or reordered keys, and any line beyond
+; size-line. A value never contains SP or HTAB.

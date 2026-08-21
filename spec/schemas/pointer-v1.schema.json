@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/pointer-v1.schema.json",
+  "title": "FXVCS pointer, format version 1 (decoded fields)",
+  "description": "The pointer stored in Git in place of a large asset is a line-oriented UTF-8 text (grammar: pointer.abnf). This schema describes the decoded field set. Encoding is deterministic: keys appear once each in ascending byte order, one space separates key and value, every line ends with LF, no CRLF/BOM/comments/trailing whitespace, total size <= 1024 bytes. Bytes that decode but do not re-encode identically are rejected.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "domain", "encoding", "manifest", "oid", "size"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Pointer format version from the first line 'version https://fxvcs.dev/pointer/v1'."
+    },
+    "domain": {
+      "type": "string",
+      "pattern": "^domain_[0-9A-Za-z][0-9A-Za-z_-]{0,62}$",
+      "description": "Storage domain that authorizes and deduplicates the object."
+    },
+    "encoding": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,31}/[1-9][0-9]{0,3}$",
+      "description": "Encoding/chunking algorithm identifier and version, e.g. whole/1 or cdc-fastcdc/1."
+    },
+    "manifest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Digest of the canonical object manifest (object-manifest-v1.schema.json)."
+    },
+    "oid": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "SHA-256 of the whole uncompressed file."
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Uncompressed size in bytes."
+    }
+  }
+}

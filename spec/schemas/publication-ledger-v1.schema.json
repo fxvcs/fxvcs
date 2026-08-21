@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/publication-ledger-v1.schema.json",
+  "title": "FXVCS publication ledger, schema version 1 ($GIT_COMMON_DIR/fxvcs/publication.db)",
+  "description": "Logical content of the per-clone publication ledger shared by linked worktrees: locally ingested objects, the commits/paths whose pointers reference them, and per-remote publication state. Objects with pending=true are pinned and cannot be evicted by ordinary cache pruning.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "objects"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "objects": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/object" }
+    }
+  },
+  "$defs": {
+    "object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest", "size", "storageDomainID", "pending", "referrers", "remotes"],
+      "properties": {
+        "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "Object (whole-file or chunk) content digest." },
+        "size": { "type": "integer", "minimum": 0 },
+        "storageDomainID": { "type": "string", "pattern": "^domain_[0-9A-Za-z][0-9A-Za-z_-]{0,62}$" },
+        "pending": { "type": "boolean", "description": "True until every remote marked requiredForPublication reports published." },
+        "referrers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/referrer" }
+        },
+        "remotes": {
+          "type": "object",
+          "propertyNames": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+          "additionalProperties": { "$ref": "#/$defs/remoteState" }
+        }
+      }
+    },
+    "referrer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "path"],
+      "properties": {
+        "commit": { "type": "string", "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$" },
+        "path": { "type": "string", "minLength": 1, "pattern": "^(?:[^/\\\\]+)(?:/[^/\\\\]+)*$" }
+      }
+    },
+    "remoteState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["published"],
+      "properties": {
+        "published": { "type": "boolean" },
+        "publishedAt": { "type": ["string", "null"], "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$" }
+      },
+      "if": { "properties": { "published": { "const": true } } },
+      "then": { "required": ["publishedAt"], "properties": { "publishedAt": { "type": "string" } } }
+    }
+  }
+}

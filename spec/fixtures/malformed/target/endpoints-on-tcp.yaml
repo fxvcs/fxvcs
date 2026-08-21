@@ -1,0 +1,29 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Target
+metadata:
+  name: dev
+spec:
+  release: v1.4.0
+  environment: dev
+  agentID: agent-host-a
+  authority: gitops
+  runtimeRef: fxserver-dev
+  retention:
+    keep: 5
+  secrets:
+    defaultProvider: local-file
+  health:
+    startupGrace: 3m
+    interval: 5s
+    timeout: 2s
+    successThreshold: 3
+    failureThreshold: 3
+    soakDuration: 2m
+    onFailure: keep
+    maxAutomaticRollbacks: 1
+    rollbackWindow: 30m
+    activationWindow: null
+    maxPlayersForRestart: null
+    checks:
+      - type: tcp
+        endpoints: [/info.json]

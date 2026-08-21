@@ -1,0 +1,6 @@
+version https://fxvcs.dev/pointer/v1
+domain domain_test_01
+encoding whole/1
+manifest sha256:07dc4976bb0464c63a8494cc3743f47b832356cecfce507e3f4f9024a3b810a9
+oid sha256:fea731187101eedde32cf8c85df565d972bd59d90d7041bbe1aaf993c3b50778
+size 15

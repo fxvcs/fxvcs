@@ -1,0 +1,33 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Target
+metadata:
+  name: dev
+spec:
+  release: v1.4.0
+  environment: dev
+  agentID: agent-host-a
+  authority: gitops
+  runtimeRef: fxserver-dev
+  retention:
+    keep: 5
+  secrets:
+    defaultProvider: local-file
+  hooks:
+    postMaterialize:
+      - id: render
+        type: template.v1
+        template:
+          repository: core
+          path: deploy/a.tmpl
+          digest: sha256:ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb
+        destination: runtime/a.cfg
+        mode: "0600"
+    preActivate:
+      - id: render
+        type: template.v1
+        template:
+          repository: core
+          path: deploy/b.tmpl
+          digest: sha256:ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb
+        destination: runtime/b.cfg
+        mode: "0600"

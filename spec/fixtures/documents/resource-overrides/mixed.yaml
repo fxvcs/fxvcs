@@ -1,0 +1,11 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: ResourceOverrides
+spec:
+  resources:
+    - repositoryID: repo_maps_01
+      path: city-map
+      activation: enabled
+    - resourceID: runtime:system/webadmin
+      activation: disabled
+    - resourceID: external:host/custom-anticheat
+      after: [monitor]

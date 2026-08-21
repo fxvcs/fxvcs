@@ -1,0 +1,4 @@
+{"\ud834\udd1e": "surrogate pair (U+1D11E) sorts before U+FF61 in UTF-16 but after in code points",
+ "\uff61": "halfwidth ideographic full stop (U+FF61)",
+ "\u00e9": "e-acute", "z": "z", "a": "a", "": "empty key",
+ "\u007f": "del", "\u0000": "nul", "\u001f": "unit separator"}

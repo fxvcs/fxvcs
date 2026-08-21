@@ -1,0 +1,9 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Environment
+metadata:
+  name: prd
+spec:
+  revision: 1
+  inputs:
+    maxPlayers: 64
+  secretScope: prd

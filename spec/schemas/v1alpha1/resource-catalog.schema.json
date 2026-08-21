@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/resource-catalog.schema.json",
+  "title": "ResourceCatalog (.fxvcs/resources.yaml)",
+  "description": "Component-owned FiveM resource inventory and default activation intent. Identity is (repositoryID, path); names are display/runtime identifiers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": { "$ref": "common.schema.json#/$defs/apiVersion" },
+    "kind": { "const": "ResourceCatalog" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositoryID"],
+      "properties": {
+        "repositoryID": { "$ref": "common.schema.json#/$defs/repositoryID" }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resources"],
+      "properties": {
+        "resources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/catalogResource" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "catalogResource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path", "name", "activation", "after", "before", "provides",
+        "dependencies", "games", "serverOnly", "persistentPaths", "mutableMode", "status"
+      ],
+      "properties": {
+        "path": { "$ref": "common.schema.json#/$defs/relativePath" },
+        "name": { "$ref": "common.schema.json#/$defs/resourceName" },
+        "activation": { "$ref": "common.schema.json#/$defs/activation" },
+        "after": { "$ref": "common.schema.json#/$defs/nameList" },
+        "before": { "$ref": "common.schema.json#/$defs/nameList" },
+        "provides": { "$ref": "common.schema.json#/$defs/nameList" },
+        "dependencies": { "$ref": "common.schema.json#/$defs/nameList" },
+        "runtimeRequirements": {
+          "type": "array",
+          "description": "FXServer capability requirements from `/`-prefixed manifest dependencies (/server:4500, /onesync, /gameBuild:h4, /policy:x, /native:0x...). Not resource names.",
+          "items": { "type": "string", "pattern": "^/[A-Za-z][A-Za-z0-9]*(:[A-Za-z0-9_.-]+)?$" },
+          "uniqueItems": true
+        },
+        "games": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["gta5", "rdr3", "gta4", "common"] },
+          "uniqueItems": true
+        },
+        "serverOnly": { "type": "boolean" },
+        "persistentPaths": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/relativePath" },
+          "uniqueItems": true
+        },
+        "persistentPathKinds": {
+          "type": "object",
+          "propertyNames": { "$ref": "common.schema.json#/$defs/relativePath" },
+          "additionalProperties": { "type": "string", "enum": ["file", "directory"] }
+        },
+        "mutableMode": { "type": "string", "enum": ["immutable", "copy"] },
+        "status": { "type": "string", "enum": ["present", "missing"] }
+      }
+    }
+  }
+}

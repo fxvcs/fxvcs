@@ -1,0 +1,17 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: ResourceCatalog
+metadata:
+  repositoryID: repo_maps_01
+spec:
+  resources:
+    - path: city-map
+      name: city-map
+      after: []
+      before: []
+      provides: []
+      dependencies: []
+      games: [gta5]
+      serverOnly: false
+      persistentPaths: []
+      mutableMode: immutable
+      status: present

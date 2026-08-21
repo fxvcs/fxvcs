@@ -1,0 +1,19 @@
+# docs/spec/resource-activation.md §4, verbatim.
+apiVersion: fxvcs.dev/v1alpha1
+kind: RuntimeResourceCatalog
+spec:
+  resources:
+    - id: runtime:system/monitor
+      name: monitor
+      source: runtime
+      activation: enabled
+    - id: external:host/custom-anticheat
+      name: custom-anticheat
+      source: external
+      activation: enabled
+      verifier:
+        contract: resource-present
+        version: 1
+      lifecycle:
+        ownership: external
+        actions: observe-only

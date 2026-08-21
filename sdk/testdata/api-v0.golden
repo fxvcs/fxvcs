@@ -1,0 +1,339 @@
+const APIVersion = format.SDKAPIVersion
+const ActionDiscard Action = "discard"
+const ActionLoad Action = "load"
+const ActionPublish Action = "publish"
+const ActionStage Action = "stage"
+const ActionUnload Action = "unload"
+const AssetConflict AssetState = "conflict"
+const AssetHydratedClean AssetState = "hydrated-clean"
+const AssetHydratedDirty AssetState = "hydrated-modified"
+const AssetMissing AssetState = "missing"
+const AssetUnhydratedClean AssetState = "unhydrated-clean"
+const CodeBusy Code = "busy"
+const CodeCancelled Code = "cancelled"
+const CodeConflict Code = "conflict"
+const CodeGit Code = "git"
+const CodeIO Code = "io"
+const CodeIntegrity Code = "integrity"
+const CodeInvalidArgument Code = "invalid-argument"
+const CodeNotCached Code = "not-cached"
+const CodeNotFound Code = "not-found"
+const CodeNotImplemented Code = "not-implemented"
+const CodeNotRepository Code = "not-repository"
+const CodePathEscape Code = "path-escape"
+const CodeStorage Code = "storage"
+const CodeUnknown Code = "unknown"
+const CodeUnsupportedFormat Code = "unsupported-format"
+const CodeUpgradeRequired Code = "upgrade-required"
+const CodeValidation Code = "validation"
+const EventInfo EventKind = "info"
+const EventItemCancelled EventKind = "item-cancelled"
+const EventItemFailed EventKind = "item-failed"
+const EventItemFinished EventKind = "item-finished"
+const EventItemProgress EventKind = "item-progress"
+const EventItemSkipped EventKind = "item-skipped"
+const EventItemStarted EventKind = "item-started"
+const EventOperationFinished EventKind = "operation-finished"
+const EventOperationStarted EventKind = "operation-started"
+const EventPlan EventKind = "plan"
+const EventStage EventKind = "stage"
+const EventWarning EventKind = "warning"
+const LauncherAlreadyCurrent LauncherOutcome = "already-current"
+const LauncherInstallRequired LauncherOutcome = "install-required"
+const LauncherInstalled LauncherOutcome = "installed"
+const LauncherNewerPresent LauncherOutcome = "newer-present"
+const LauncherUpdateRequired LauncherOutcome = "update-required"
+const LauncherUpdated LauncherOutcome = "updated"
+const LauncherVersionConflict LauncherOutcome = "equal-version-conflict"
+const PhaseTransfer Phase = "transfer"
+const PhaseVerify Phase = "verify"
+const PhaseWrite Phase = "write"
+const ProgressActive ProgressStatus = "active"
+const ProgressCancelled ProgressStatus = "cancelled"
+const ProgressCompleted ProgressStatus = "completed"
+const ProgressFailed ProgressStatus = "failed"
+const ProgressPending ProgressStatus = "pending"
+const ProgressSkipped ProgressStatus = "skipped"
+const RepositoryKindComponent RepositoryKind = "component"
+const RepositoryKindStack RepositoryKind = "stack"
+const ReuseCached Reuse = "cached"
+const ReuseShared Reuse = "shared"
+const StageActivation Stage = "activation"
+const StageLifecycle Stage = "lifecycle"
+const StageMaterialization Stage = "materialization"
+const StagePreflight Stage = "preflight"
+const StageReadiness Stage = "readiness"
+const StageRendering Stage = "rendering"
+const StageResolving Stage = "resolving"
+const StageRollback Stage = "rollback"
+const StageTransferring Stage = "downloading"
+const StageVerifying Stage = "verifying"
+const StageWriting Stage = "writing"
+const UpgradeApply UpgradeMode = "apply"
+const UpgradeCheck UpgradeMode = "check"
+const UpgradePlan UpgradeMode = "plan"
+func (c *Client) CacheLimit(ctx context.Context, req CacheLimitRequest) (*CacheLimitResult, error)
+func (c *Client) CachePrune(ctx context.Context, req CachePruneRequest) (*CachePruneResult, error)
+func (c *Client) CacheStatus(ctx context.Context, req CacheStatusRequest) (*CacheStatusResult, error)
+func (c *Client) CacheVerify(ctx context.Context, req CacheVerifyRequest) (*CacheVerifyResult, error)
+func (c *Client) Clone(ctx context.Context, req CloneRequest) (*CloneResult, error)
+func (c *Client) Compatibility(ctx context.Context, req CompatibilityRequest) (*CompatibilityResult, error)
+func (c *Client) Dehydrate(ctx context.Context, req DehydrateRequest) (*DehydrateResult, error)
+func (c *Client) DeploymentsList(ctx context.Context, req DeploymentsListRequest) (*DeploymentsListResult, error)
+func (c *Client) DeploymentsPrune(ctx context.Context, req DeploymentsPruneRequest) (*DeploymentsPruneResult, error)
+func (c *Client) Discard(ctx context.Context, req DiscardRequest) (*DiscardResult, error)
+func (c *Client) Doctor(ctx context.Context, req DoctorRequest) (*DoctorResult, error)
+func (c *Client) EnvironmentList(ctx context.Context, req EnvironmentListRequest) (*EnvironmentListResult, error)
+func (c *Client) EnvironmentSet(ctx context.Context, req EnvironmentSetRequest) (*Environment, error)
+func (c *Client) EnvironmentShow(ctx context.Context, req EnvironmentShowRequest) (*Environment, error)
+func (c *Client) Hydrate(ctx context.Context, req HydrateRequest) (*HydrateResult, error)
+func (c *Client) Info(ctx context.Context, req InfoRequest) (*InfoResult, error)
+func (c *Client) Init(ctx context.Context, req InitRequest) (*InitResult, error)
+func (c *Client) InstalledVersion() string
+func (c *Client) LauncherEnsure(ctx context.Context, req LauncherEnsureRequest) (*LauncherEnsureResult, error)
+func (c *Client) Migrate(ctx context.Context, req MigrateRequest) (*MigrateResult, error)
+func (c *Client) ObjectFetch(ctx context.Context, req ObjectFetchRequest) (*ObjectInfo, error)
+func (c *Client) ObjectRead(ctx context.Context, req ObjectReadRequest) (*ObjectReadResult, error)
+func (c *Client) ObjectStat(ctx context.Context, req ObjectStatRequest) (*ObjectInfo, error)
+func (c *Client) ObjectsPublish(ctx context.Context, req ObjectsPublishRequest) (*ObjectsPublishResult, error)
+func (c *Client) ObjectsStatus(ctx context.Context, req ObjectsStatusRequest) (*ObjectsStatusResult, error)
+func (c *Client) PublicationSummary(ctx context.Context, req PublicationSummaryRequest) (*PublicationSummaryResult, error)
+func (c *Client) ReconcileTarget(ctx context.Context, req ReconcileTargetRequest) (*ReconcileTargetResult, error)
+func (c *Client) ReleaseCreate(ctx context.Context, req ReleaseCreateRequest) (*ReleaseCreateResult, error)
+func (c *Client) ReleaseExport(ctx context.Context, req ReleaseExportRequest) (*ReleaseExportResult, error)
+func (c *Client) ReleaseImport(ctx context.Context, req ReleaseImportRequest) (*ReleaseImportResult, error)
+func (c *Client) ReleaseInspect(ctx context.Context, req ReleaseInspectRequest) (*ReleaseInspectResult, error)
+func (c *Client) ReleaseList(ctx context.Context, req ReleaseListRequest) (*ReleaseListResult, error)
+func (c *Client) ReleaseNotes(ctx context.Context, req ReleaseNotesRequest) (*ReleaseNotesResult, error)
+func (c *Client) Repair(ctx context.Context, req RepairRequest) (*RepairResult, error)
+func (c *Client) RepositoryIdentify(ctx context.Context, req RepositoryIdentifyRequest) (*RepositoryIdentifyResult, error)
+func (c *Client) ResourcesSet(ctx context.Context, req ResourcesSetRequest) (*ResourcesSetResult, error)
+func (c *Client) ResourcesSync(ctx context.Context, req ResourcesSyncRequest) (*ResourcesSyncResult, error)
+func (c *Client) ResourcesValidate(ctx context.Context, req ResourcesValidateRequest) (*ResourcesValidateResult, error)
+func (c *Client) RuntimeResourcesSync(ctx context.Context, req RuntimeResourcesSyncRequest) (*RuntimeResourcesSyncResult, error)
+func (c *Client) Scan(ctx context.Context, req ScanRequest) (*ScanResult, error)
+func (c *Client) Setup(ctx context.Context, req SetupRequest) (*SetupResult, error)
+func (c *Client) StackAdd(ctx context.Context, req StackAddRequest) (*StackAddResult, error)
+func (c *Client) StackInit(ctx context.Context, req StackInitRequest) (*StackInitResult, error)
+func (c *Client) StackRescan(ctx context.Context, req StackRescanRequest) (*StackRescanResult, error)
+func (c *Client) StackStatus(ctx context.Context, req StackStatusRequest) (*StackStatusResult, error)
+func (c *Client) StackSync(ctx context.Context, req StackSyncRequest) (*StackSyncResult, error)
+func (c *Client) StackValidate(ctx context.Context, req StackValidateRequest) (*StackValidateResult, error)
+func (c *Client) Stats(ctx context.Context, req StatsRequest) (*StatsResult, error)
+func (c *Client) Status(ctx context.Context, req StatusRequest) (*StatusResult, error)
+func (c *Client) StorageAdd(ctx context.Context, req StorageAddRequest) (*StorageAddResult, error)
+func (c *Client) StorageList(ctx context.Context, req StorageListRequest) (*StorageListResult, error)
+func (c *Client) StorageLogin(ctx context.Context, req StorageLoginRequest) (*StorageLoginResult, error)
+func (c *Client) StorageTest(ctx context.Context, req StorageTestRequest) (*StorageTestResult, error)
+func (c *Client) TargetList(ctx context.Context, req TargetListRequest) (*TargetListResult, error)
+func (c *Client) TargetSet(ctx context.Context, req TargetSetRequest) (*Target, error)
+func (c *Client) TargetShow(ctx context.Context, req TargetShowRequest) (*Target, error)
+func (c *Client) Track(ctx context.Context, req TrackRequest) (*TrackResult, error)
+func (c *Client) TrackingCheck(ctx context.Context, req TrackingCheckRequest) (*TrackingCheckResult, error)
+func (c *Client) Untrack(ctx context.Context, req UntrackRequest) (*UntrackResult, error)
+func (c *Client) Upgrade(ctx context.Context, req UpgradeRequest) (*UpgradeResult, error)
+func (c *Client) Verify(ctx context.Context, req VerifyRequest) (*VerifyResult, error)
+func (e *Error) Error() string
+func (e *Error) Unwrap() error
+func (e *Error) WithHint(hint string) *Error
+func (s *ProgressStream) Complete(err error)
+func (s *ProgressStream) Progress(ev Event)
+func (s *ProgressStream) Snapshot() ProgressSnapshot
+func (s *ProgressStream) Snapshots() <-chan ProgressSnapshot
+func CodeOf(err error) Code
+func Discard(Event)
+func HintOf(err error) string
+func New(opts Options) (*Client, error)
+func NewError(code Code, msg string) *Error
+func NewProgressStream(opts ProgressStreamOptions) *ProgressStream
+func SupportedFormats() FormatVersions
+func WrapError(code Code, msg string, cause error) *Error
+type Action string
+type AssetAction struct { Action Action `json:"action"` Available bool `json:"available"` Done bool `json:"done,omitempty"` Reason string `json:"reason,omitempty"` Code Code `json:"code,omitempty"` }
+type AssetState string
+type BusyOwner struct { Operation string `json:"operation"` PID int `json:"pid,omitempty"` Host string `json:"host,omitempty"` StartedAt string `json:"startedAt,omitempty"` }
+type CacheCorruptObject struct { Domain string `json:"domain"` Digest string `json:"digest"` Bytes int64 `json:"bytes"` Pinned bool `json:"pinned"` Reason string `json:"reason"` }
+type CacheLimitRequest struct { Path string `json:"path"` LimitBytes int64 `json:"limitBytes"` }
+type CacheLimitResult struct { LimitBytes int64 `json:"limitBytes"` CurrentBytes int64 `json:"currentBytes"` }
+type CachePruneRequest struct { Path string `json:"path"` TargetBytes int64 `json:"targetBytes,omitempty"` DryRun bool `json:"dryRun"` }
+type CachePruneResult struct { Evicted []ItemOutcome `json:"evicted"` Kept int `json:"kept"` DryRun bool `json:"dryRun"` }
+type CacheStatusRequest struct { Path string `json:"path"` }
+type CacheStatusResult struct { CacheDir string `json:"cacheDir"` TotalBytes int64 `json:"totalBytes"` PinnedBytes int64 `json:"pinnedBytes"` EvictableBytes int64 `json:"evictableBytes"` Objects int `json:"objects"` Pinned int `json:"pinned"` LimitBytes int64 `json:"limitBytes,omitempty"` }
+type CacheVerifyRequest struct { Path string `json:"path"` AllDomains bool `json:"allDomains,omitempty"` Repair bool `json:"repair,omitempty"` }
+type CacheVerifyResult struct { Checked int `json:"checked"` Bytes int64 `json:"bytes"` Corrupt []CacheCorruptObject `json:"corrupt"` Removed int `json:"removed"` Kept []CacheCorruptObject `json:"kept,omitempty"` }
+type CatalogResource struct { Path string `json:"path"` Name string `json:"name"` Activation string `json:"activation"` After []string `json:"after"` Before []string `json:"before"` Provides []string `json:"provides"` Dependencies []string `json:"dependencies"` Games []string `json:"games"` ServerOnly bool `json:"serverOnly"` PersistentPaths []string `json:"persistentPaths"` PersistentPathKinds map[string]string `json:"persistentPathKinds,omitempty"` MutableMode string `json:"mutableMode"` Status string `json:"status"` }
+type Client struct { opts Options installed format.Version progressMu sync.Mutex }
+type CloneRequest struct { URL string `json:"url"` Directory string `json:"directory,omitempty"` Cwd string `json:"cwd,omitempty"` Hydrate bool `json:"hydrate,omitempty"` Blobless bool `json:"blobless,omitempty"` LauncherPath string `json:"launcherPath,omitempty"` }
+type CloneResult struct { RepositoryRoot string `json:"repositoryRoot"` Setup *SetupResult `json:"setup,omitempty"` Hydrate *HydrateResult `json:"hydrate,omitempty"` }
+type Code string
+type CompatibilityRequest struct { Path string }
+type CompatibilityResult struct { RepositoryRoot string `json:"repositoryRoot"` RepositoryID string `json:"repositoryID"` InstalledVersion string `json:"installedVersion"` MinimumFXVCSVersion string `json:"minimumFXVCSVersion"` GitIntegrationVersion int `json:"gitIntegrationVersion"` Formats FormatVersions `json:"formats"` UpgradeRequired *UpgradeRequired `json:"upgradeRequired,omitempty"` }
+type ComponentChange struct { RepositoryID string `json:"repositoryID"` RepositoryName string `json:"repositoryName"` Change string `json:"change"` FromCommit string `json:"fromCommit,omitempty"` ToCommit string `json:"toCommit,omitempty"` AssetsChanged bool `json:"assetsChanged,omitempty"` MountChanged bool `json:"mountChanged,omitempty"` FromMount string `json:"fromMount,omitempty"` ToMount string `json:"toMount,omitempty"` }
+type ComponentDescriptor struct { SourceRoot string `json:"sourceRoot"` Layout string `json:"layout"` ResourceName string `json:"resourceName,omitempty"` }
+type ComponentPin struct { RepositoryID string `json:"repositoryID"` RepositoryName string `json:"repositoryName"` Remote string `json:"remote"` Ref string `json:"ref,omitempty"` Commit string `json:"commit"` AssetRoot string `json:"assetRoot"` Assets int `json:"assets"` Mount string `json:"mount"` DescriptorFrom string `json:"descriptorFrom"` Resources int `json:"resources"` Objects ObjectAvailability `json:"objects,omitzero"` DurablePin *bool `json:"durablePin,omitempty"` }
+type ComponentProposal struct { RepositoryID string `json:"repositoryID"` Name string `json:"name"` Remote string `json:"remote"` Ref string `json:"ref,omitempty"` Commit string `json:"commit"` Profile string `json:"profile"` Descriptor ComponentDescriptor `json:"descriptor"` DescriptorFrom string `json:"descriptorFrom"` Detected *ComponentDescriptor `json:"detected,omitempty"` Mount string `json:"mount"` Alias string `json:"alias,omitempty"` Required bool `json:"required"` Resources int `json:"resources"` }
+type ComponentStatus struct { RepositoryID string `json:"repositoryID"` Name string `json:"name,omitempty"` Remote string `json:"remote"` Ref string `json:"ref,omitempty"` Mount string `json:"mount"` Required bool `json:"required"` Fetched bool `json:"fetched"` Commit string `json:"commit,omitempty"` Resources int `json:"resources,omitempty"` ReleasedCommit string `json:"releasedCommit,omitempty"` Drifted bool `json:"drifted,omitempty"` Error string `json:"error,omitempty"` }
+type ComponentSync struct { RepositoryID string `json:"repositoryID"` Remote string `json:"remote"` Ref string `json:"ref,omitempty"` Commit string `json:"commit,omitempty"` Previous string `json:"previous,omitempty"` Updated bool `json:"updated"` Error string `json:"error,omitempty"` }
+type ComponentTag struct { RepositoryID string `json:"repositoryID"` Remote string `json:"remote"` Tag string `json:"tag"` Commit string `json:"commit"` }
+type CompositionProblem struct { Component string `json:"component,omitempty"` Field string `json:"field"` Message string `json:"message"` }
+type DehydrateRequest = HydrateRequest
+type DehydrateResult = HydrateResult
+type DeploymentPruneCandidate struct { RealizationID string `json:"realizationID"` Path string `json:"path"` Bytes int64 `json:"bytes"` }
+type DeploymentPruneMaterializedCandidate struct { Digest string `json:"digest"` Path string `json:"path"` Bytes int64 `json:"bytes"` }
+type DeploymentRecord struct { RealizationID string `json:"realizationID"` Release string `json:"release"` Environment string `json:"environment"` EnvironmentRevision int `json:"environmentRevision"` Phase string `json:"phase"` RetryHeld bool `json:"retryHeld"` AttemptInvalidated bool `json:"attemptInvalidated"` StartedAt string `json:"startedAt"` FinishedAt string `json:"finishedAt,omitempty"` Outcome string `json:"outcome,omitempty"` }
+type DeploymentsListRequest struct { AgentConfigPath string `json:"agentConfigPath,omitempty"` Target string `json:"target,omitempty"` }
+type DeploymentsListResult struct { Targets []TargetDeploymentHistory `json:"targets"` }
+type DeploymentsPruneRequest struct { AgentConfigPath string `json:"agentConfigPath,omitempty"` Target string `json:"target"` Keep int `json:"keep,omitempty"` Apply bool `json:"apply,omitempty"` ExpectedPlanID string `json:"expectedPlanID,omitempty"` }
+type DeploymentsPruneResult struct { Target string `json:"target"` PlanID string `json:"planID"` Applied bool `json:"applied"` Keep int `json:"keep"` EstimatedBytes int64 `json:"estimatedBytes"` Candidates []DeploymentPruneCandidate `json:"candidates"` MaterializedCandidates []DeploymentPruneMaterializedCandidate `json:"materializedCandidates,omitempty"` EstimatedMaterializedBytes int64 `json:"estimatedMaterializedBytes,omitempty"` }
+type DiscardRequest struct { Path string `json:"path"` Selector PathSelector `json:"selector"` All bool `json:"all,omitempty"` }
+type DiscardResult = HydrateResult
+type DiscoveryFailure struct { Reason string `json:"reason"` Path string `json:"path,omitempty"` Detail string `json:"detail,omitempty"` Candidates []FiveMCandidate `json:"candidates,omitempty"` }
+type DoctorFinding struct { Path string `json:"path,omitempty"` Kind string `json:"kind"` Message string `json:"message"` Repairable bool `json:"repairable"` }
+type DoctorRequest struct { Path string `json:"path"` Launcher string `json:"launcher,omitempty"` }
+type DoctorResult struct { Findings []DoctorFinding `json:"findings"` }
+type Environment struct { Name string `json:"name"` File string `json:"file"` Revision int `json:"revision"` Inputs map[string]string `json:"inputs"` SecretScope string `json:"secretScope"` Created bool `json:"created,omitempty"` Changed bool `json:"changed,omitempty"` UsedBy []string `json:"usedBy,omitempty"` }
+type EnvironmentListRequest struct { Path string `json:"path"` }
+type EnvironmentListResult struct { Environments []Environment `json:"environments"` }
+type EnvironmentSetRequest struct { Path string `json:"path"` Name string `json:"name"` Inputs []string `json:"inputs,omitempty"` SecretScope string `json:"secretScope,omitempty"` }
+type EnvironmentShowRequest struct { Path string `json:"path"` Name string `json:"name"` }
+type Error struct { Code Code Message string Details any Hint string cause error }
+type Event struct { Time time.Time `json:"time"` Operation string `json:"operation"` Kind EventKind `json:"kind"` Path string `json:"path,omitempty"` Digest string `json:"digest,omitempty"` Bytes int64 `json:"bytes,omitempty"` Total int64 `json:"total,omitempty"` Message string `json:"message,omitempty"` Code Code `json:"code,omitempty"` Remote string `json:"remote,omitempty"` Phase Phase `json:"phase,omitempty"` Items []PlanItem `json:"items,omitempty"` Index int `json:"index,omitempty"` Count int `json:"count,omitempty"` Chunks int `json:"chunks,omitempty"` ChunksDone int `json:"chunksDone,omitempty"` Stage Stage `json:"stage,omitempty"` ReusedItems int `json:"reusedItems,omitempty"` ReusedBytes int64 `json:"reusedBytes,omitempty"` WireBytes int64 `json:"wireBytes,omitempty"` PartID string `json:"partId,omitempty"` PartBytes int64 `json:"partBytes,omitempty"` PartTotal int64 `json:"partTotal,omitempty"` PartWireBytes int64 `json:"partWireBytes,omitempty"` PartIndex int `json:"partIndex,omitempty"` PartCount int `json:"partCount,omitempty"` }
+type EventKind string
+type FiveMCandidate struct { SourceRoot string `json:"sourceRoot"` Layout string `json:"layout"` ResourceName string `json:"resourceName,omitempty"` Resources []string `json:"resources"` }
+type FiveMDescriptor struct { SourceRoot string `json:"sourceRoot"` Layout string `json:"layout"` ResourceName string `json:"resourceName,omitempty"` ResourceNameProposed bool `json:"resourceNameProposed,omitempty"` Resources []string `json:"resources"` Ignored []string `json:"ignored,omitempty"` }
+type FormatVersions struct { CommittedAPIVersions []string `json:"committedAPIVersions"` PointerFormat int `json:"pointerFormat"` ObjectManifest int `json:"objectManifest"` AssetIndex int `json:"assetIndex"` GitIntegrationGeneration int `json:"gitIntegrationGeneration"` HydrationStateSchema int `json:"hydrationStateSchema"` PublicationLedgerSchema int `json:"publicationLedgerSchema"` }
+type HydrateRequest struct { Path string `json:"path"` Selector PathSelector `json:"selector"` }
+type HydrateResult struct { Items []ItemOutcome `json:"items"` }
+type InfoRequest struct { Path string `json:"path"` }
+type InfoResult struct { RepositoryRoot string `json:"repositoryRoot"` Name string `json:"name"` Profile string `json:"profile"` RepositoryID string `json:"repositoryID"` StorageDomainID string `json:"storageDomainID"` MinimumFXVCSVersion string `json:"minimumFXVCSVersion"` GitIntegrationVersion int `json:"gitIntegrationVersion"` InstalledVersion string `json:"installedVersion"` Descriptor *FiveMDescriptor `json:"descriptor,omitempty"` Remotes []StorageRemoteSpec `json:"remotes"` LauncherPath string `json:"launcherPath,omitempty"` GitDriverConfigured bool `json:"gitDriverConfigured"` PrePushHookInstalled bool `json:"prePushHookInstalled"` PrePushHookForeign bool `json:"prePushHookForeign,omitempty"` }
+type InitRequest struct { Path string `json:"path"` Name string `json:"name"` Profile string `json:"profile"` StorageDomainID string `json:"storageDomainID,omitempty"` SourceRoot string `json:"sourceRoot,omitempty"` Layout string `json:"layout,omitempty"` ResourceName string `json:"resourceName,omitempty"` RemoteName string `json:"remoteName,omitempty"` RemotePath string `json:"remotePath,omitempty"` LauncherPath string `json:"launcherPath,omitempty"` }
+type InitResult struct { RepositoryRoot string `json:"repositoryRoot"` RepositoryID string `json:"repositoryID"` StorageDomainID string `json:"storageDomainID"` FilesWritten []string Name string `json:"name,omitempty"` Profile string `json:"profile,omitempty"` Descriptor *FiveMDescriptor `json:"descriptor,omitempty"` Setup *SetupResult `json:"setup,omitempty"` Track *TrackResult `json:"track,omitempty"` }
+type ItemOutcome struct { Path string `json:"path"` Digest string `json:"digest,omitempty"` Bytes int64 `json:"bytes,omitempty"` Skipped bool `json:"skipped,omitempty"` Reason string `json:"reason,omitempty"` Paths []string `json:"paths,omitempty"` Reuse Reuse `json:"reuse,omitempty"` }
+type LauncherEnsureRequest struct { SourcePath string `json:"sourcePath,omitempty"` TargetPath string `json:"targetPath,omitempty"` RepairEqualVersion bool `json:"repairEqualVersion,omitempty"` }
+type LauncherEnsureResult struct { Launcher *LauncherState `json:"launcher"` Legacy *LauncherState `json:"legacy,omitempty"` }
+type LauncherOutcome string
+type LauncherState struct { Path string `json:"path"` Outcome LauncherOutcome `json:"outcome"` Changed bool `json:"changed"` CandidateVersion string `json:"candidateVersion"` InstalledVersion string `json:"installedVersion,omitempty"` CandidateSHA256 string `json:"candidateSHA256"` InstalledSHA256 string `json:"installedSHA256,omitempty"` }
+type MigrateRequest struct { Path string `json:"path"` Selector PathSelector `json:"selector"` }
+type MigrateResult struct { Items []ItemOutcome `json:"items"` }
+type ObjectAvailability struct { Remotes []string `json:"remotes,omitempty"` Assets int `json:"assets"` Missing []string `json:"missing,omitempty"` Unverifiable []string `json:"unverifiable,omitempty"` }
+type ObjectFetchRequest = ObjectStatRequest
+type ObjectInfo struct { Digest string `json:"digest"` Size int64 `json:"size"` Cached bool `json:"cached"` Objects int `json:"objects,omitempty"` Encoding string `json:"encoding,omitempty"` }
+type ObjectPublicationState struct { Digest string `json:"digest"` Bytes int64 `json:"bytes"` Pending bool `json:"pending"` Remotes map[string]bool `json:"remotes"` Referrers []string `json:"referrers,omitempty"` }
+type ObjectReadRequest struct { Path string `json:"path"` Pointer string `json:"pointer"` Offset int64 `json:"offset,omitempty"` Length int64 `json:"length,omitempty"` }
+type ObjectReadResult struct { Digest string `json:"digest"` Size int64 `json:"size"` Offset int64 `json:"offset"` Length int64 `json:"length"` Content io.ReadCloser `json:"-"` }
+type ObjectStatRequest struct { Path string `json:"path"` Pointer string `json:"pointer"` }
+type ObjectsPublishRequest struct { Path string `json:"path"` Remotes []string `json:"remotes,omitempty"` Selector PathSelector `json:"selector,omitempty"` Concurrency int `json:"concurrency,omitempty"` }
+type ObjectsPublishResult struct { Published []ItemOutcome `json:"published"` Failed []ItemOutcome `json:"failed"` Assets int `json:"assets"` Objects int `json:"objects"` }
+type ObjectsStatusRequest struct { Path string `json:"path"` }
+type ObjectsStatusResult struct { Objects []ObjectPublicationState `json:"objects"` }
+type OperationProgress struct { Status ProgressStatus `json:"status"` Stage Stage `json:"stage,omitempty"` Determinate bool `json:"determinate"` Progress float64 `json:"progress"` Planned int `json:"planned"` Active int `json:"active"` Completed int `json:"completed"` Skipped int `json:"skipped"` Failed int `json:"failed"` Cancelled int `json:"cancelled"` Terminal int `json:"terminal"` CompletedWorkBytes int64 `json:"completedWorkBytes"` TotalWorkBytes int64 `json:"totalWorkBytes"` WorkBytesPerSecond float64 `json:"workBytesPerSecond"` AverageWorkBytesPerSecond float64 `json:"averageWorkBytesPerSecond"` WorkETA time.Duration `json:"workETA,omitempty"` WorkETAKnown bool `json:"workETAKnown"` FailureReason string `json:"failureReason,omitempty"` }
+type Options struct { Progress ProgressFunc InstalledVersion string GitExecutable string LauncherSourcePath string CacheDir string ConfigDir string LockTimeout time.Duration }
+type PathSelector struct { Paths []string `json:"paths"` Glob bool `json:"glob,omitempty"` }
+type Phase string
+type PlanItem struct { Path string `json:"path,omitempty"` Paths []string `json:"paths,omitempty"` Digest string `json:"digest,omitempty"` Bytes int64 `json:"bytes,omitempty"` Remote string `json:"remote,omitempty"` }
+type PlannedResource struct { Name string `json:"name"` Source string `json:"source"` RepositoryName string `json:"repositoryName,omitempty"` Path string `json:"path,omitempty"` ResourceID string `json:"resourceID,omitempty"` Activation string `json:"activation"` ActivationSource string `json:"activationSource"` EnsureOrder int `json:"ensureOrder"` Mount string `json:"mount,omitempty"` }
+type ProgressFunc func(Event)
+type ProgressItem struct { Path string `json:"path,omitempty"` Digest string `json:"digest,omitempty"` Remote string `json:"remote,omitempty"` Phase Phase `json:"phase,omitempty"` Status ProgressStatus `json:"status"` Bytes int64 `json:"bytes,omitempty"` Total int64 `json:"total,omitempty"` WireBytes int64 `json:"wireBytes,omitempty"` Chunks int `json:"chunks,omitempty"` ChunksDone int `json:"chunksDone,omitempty"` Message string `json:"message,omitempty"` Parts []ProgressPart `json:"parts,omitempty"` }
+type ProgressPart struct { ID string `json:"id"` Status ProgressStatus `json:"status"` Index int `json:"index,omitempty"` Count int `json:"count,omitempty"` Bytes int64 `json:"bytes,omitempty"` Total int64 `json:"total,omitempty"` WireBytes int64 `json:"wireBytes,omitempty"` }
+type ProgressSnapshot struct { Time time.Time `json:"time"` Operation string `json:"operation,omitempty"` Overall OperationProgress `json:"overall"` Transfer TransferProgress `json:"transfer"` Items []ProgressItem `json:"items,omitempty"` }
+type ProgressStatus string
+type ProgressStream struct { mu sync.Mutex out chan ProgressSnapshot closed bool tracker progressTracker complete sync.Once }
+type ProgressStreamOptions struct { RateWindow time.Duration MinETASample time.Duration ItemLimit int }
+type PublicationRemoteUsage struct { Name string `json:"name"` Objects int `json:"objects"` Bytes int64 `json:"bytes"` }
+type PublicationSummaryRequest struct { Path string `json:"path"` }
+type PublicationSummaryResult struct { Objects int `json:"objects"` Bytes int64 `json:"bytes"` PendingObjects int `json:"pendingObjects"` PendingBytes int64 `json:"pendingBytes"` Remotes []PublicationRemoteUsage `json:"remotes"` }
+type ReconcileAction struct { Phase string `json:"phase"` Action string `json:"action"` }
+type ReconcileContentRequirement struct { Digest string `json:"digest"` Bytes int64 `json:"bytes"` Present bool `json:"present"` Available bool `json:"available"` }
+type ReconcileRefusal struct { Code string `json:"code"` Path string `json:"path,omitempty"` Message string `json:"message"` }
+type ReconcileResourceOperation struct { Action string `json:"action"` Name string `json:"name,omitempty"` }
+type ReconcileTargetRequest struct { Path string `json:"path"` Target string `json:"target"` AgentConfigPath string `json:"agentConfigPath,omitempty"` Apply bool `json:"apply,omitempty"` }
+type ReconcileTargetResult struct { Target string `json:"target"` RealizationID string `json:"realizationID,omitempty"` CurrentRealizationID string `json:"currentRealizationID,omitempty"` RequiredBytes int64 `json:"requiredBytes"` Applicable bool `json:"applicable"` Applied bool `json:"applied"` Actions []ReconcileAction `json:"actions,omitempty"` LifecycleMode string `json:"lifecycleMode,omitempty"` ResourceOperations []ReconcileResourceOperation `json:"resourceOperations,omitempty"` Refusals []ReconcileRefusal `json:"refusals,omitempty"` MissingContent []ReconcileContentRequirement `json:"missingContent,omitempty"` }
+type ReleaseChange struct { From string `json:"from"` To string `json:"to"` SameSource bool `json:"sameSource"` Components []ComponentChange `json:"components"` Resources []ResourceChange `json:"resources"` Enabled int `json:"enabled"` Disabled int `json:"disabled"` }
+type ReleaseComponentInfo struct { RepositoryID string `json:"repositoryID"` RepositoryName string `json:"repositoryName"` Remote string `json:"remote"` Commit string `json:"commit"` AssetRoot string `json:"assetRoot"` StorageDomainID string `json:"storageDomainID"` Descriptor ComponentDescriptor `json:"descriptor"` DescriptorFrom string `json:"descriptorFrom"` Mount string `json:"mount"` }
+type ReleaseCreateRequest struct { Path string `json:"path"` Name string `json:"name"` Pins []string `json:"pins,omitempty"` Enable []string `json:"enable,omitempty"` Disable []string `json:"disable,omitempty"` VariantOf string `json:"variantOf,omitempty"` CreatedBy string `json:"createdBy,omitempty"` TagComponents bool `json:"tagComponents,omitempty"` SkipObjectCheck bool `json:"skipObjectCheck,omitempty"` AllowUnverifiedObjects bool `json:"allowUnverifiedObjects,omitempty"` }
+type ReleaseCreateResult struct { Name string `json:"name"` File string `json:"file"` Written bool `json:"written"` Digest string `json:"digest,omitempty"` SourceSetDigest string `json:"sourceSetDigest,omitempty"` Components []ComponentPin `json:"components"` Resources []PlannedResource `json:"resources"` Enabled int `json:"enabled"` Disabled int `json:"disabled"` Tags []ComponentTag `json:"tags,omitempty"` Change *ReleaseChange `json:"change,omitempty"` Warnings []string `json:"warnings,omitempty"` Problems []CompositionProblem `json:"problems,omitempty"` }
+type ReleaseExportRequest struct { Path string `json:"path"` Name string `json:"name"` }
+type ReleaseExportResult struct { Name string `json:"name"` Digest string `json:"digest"` Bytes int `json:"bytes"` Document []byte `json:"-"` }
+type ReleaseImportRequest struct { Path string `json:"path"` Document []byte `json:"-"` }
+type ReleaseImportResult struct { Name string `json:"name"` File string `json:"file"` Digest string `json:"digest"` Written bool `json:"written"` Warnings []string `json:"warnings,omitempty"` }
+type ReleaseInspectRequest struct { Path string `json:"path"` Name string `json:"name"` CompareTo string `json:"compareTo,omitempty"` }
+type ReleaseInspectResult struct { Name string `json:"name"` File string `json:"file"` CreatedAt string `json:"createdAt"` CreatedBy string `json:"createdBy,omitempty"` StackID string `json:"stackID"` Digest string `json:"digest"` SourceSetDigest string `json:"sourceSetDigest"` VariantOf string `json:"variantOf,omitempty"` MinimumFXVCSVersion string `json:"minimumFXVCSVersion,omitempty"` Components []ReleaseComponentInfo `json:"components"` Resources []PlannedResource `json:"resources"` Enabled int `json:"enabled"` Disabled int `json:"disabled"` SameSourceAs []string `json:"sameSourceAs,omitempty"` Change *ReleaseChange `json:"change,omitempty"` }
+type ReleaseListRequest struct { Path string `json:"path"` }
+type ReleaseListResult struct { Releases []ReleaseSummary `json:"releases"` }
+type ReleaseNotesRequest struct { Path string `json:"path"` Name string `json:"name"` Since string `json:"since,omitempty"` }
+type ReleaseNotesResult struct { Release string `json:"release"` Since string `json:"since,omitempty"` Markdown string `json:"markdown"` Change ReleaseChange `json:"change"` }
+type ReleaseSummary struct { Name string `json:"name"` CreatedAt string `json:"createdAt"` CreatedBy string `json:"createdBy,omitempty"` Components int `json:"components"` Enabled int `json:"enabled"` SourceSetDigest string `json:"sourceSetDigest"` VariantOf string `json:"variantOf,omitempty"` UsedBy []string `json:"usedBy,omitempty"` }
+type RepairRequest struct { Path string `json:"path"` Launcher string `json:"launcher,omitempty"` }
+type RepairResult struct { Rebuilt []string `json:"rebuilt"` Refused []DoctorFinding `json:"refused"` }
+type RepositoryIdentifyRequest struct { Path string `json:"path"` }
+type RepositoryIdentifyResult struct { RepositoryRoot string `json:"repositoryRoot"` Kind RepositoryKind `json:"kind"` }
+type RepositoryKind string
+type RescanFinding struct { RepositoryID string `json:"repositoryID"` Name string `json:"name"` Commit string `json:"commit"` Accepted ComponentDescriptor `json:"accepted"` AcceptedFrom string `json:"acceptedFrom"` Detected *ComponentDescriptor `json:"detected,omitempty"` Mount string `json:"mount"` ProposedMount string `json:"proposedMount,omitempty"` Agrees bool `json:"agrees"` Notes []string `json:"notes,omitempty"` Updated bool `json:"updated,omitempty"` }
+type ResourceChange struct { Name string `json:"name"` Change string `json:"change"` Source string `json:"source"` RepositoryName string `json:"repositoryName,omitempty"` From string `json:"from,omitempty"` To string `json:"to,omitempty"` }
+type ResourceProblem struct { Path string `json:"path"` Field string `json:"field"` Message string `json:"message"` }
+type ResourcesSetRequest struct { Path string `json:"path"` ResourcePath string `json:"resourcePath"` Activation string `json:"activation,omitempty"` After []string `json:"after,omitempty"` Before []string `json:"before,omitempty"` }
+type ResourcesSetResult struct { ResourcePath string `json:"resourcePath"` Activation string `json:"activation"` Resource *CatalogResource `json:"resource,omitempty"` Warnings []string `json:"warnings,omitempty"` Written bool `json:"written,omitempty"` }
+type ResourcesSyncRequest struct { Path string `json:"path"` NewActivation string `json:"newActivation,omitempty"` FromCfg string `json:"fromCfg,omitempty"` }
+type ResourcesSyncResult struct { Added []string `json:"added"` Updated []string `json:"updated"` Missing []string `json:"missing"` Pending []string `json:"pending"` CatalogPath string `json:"catalogPath,omitempty"` Enabled []string `json:"enabled,omitempty"` Unchanged int `json:"unchanged,omitempty"` Written bool `json:"written,omitempty"` Warnings []string `json:"warnings,omitempty"` }
+type ResourcesValidateRequest struct { Path string `json:"path"` KnownNames []string `json:"knownNames,omitempty"` }
+type ResourcesValidateResult struct { CatalogPath string `json:"catalogPath"` Valid bool `json:"valid"` Resources int `json:"resources"` Problems []ResourceProblem `json:"problems"` Warnings []string `json:"warnings,omitempty"` Undeclared []string `json:"undeclared"` Missing []string `json:"missing"` }
+type Reuse string
+type RuntimeResourcesSyncRequest struct { Path string `json:"path"` FromCfg string `json:"fromCfg"` }
+type RuntimeResourcesSyncResult struct { File string `json:"file"` Proposed []string `json:"proposed"` Matched []string `json:"matched"` Existing []string `json:"existing"` Files []string `json:"files,omitempty"` Warnings []string `json:"warnings,omitempty"` Written bool `json:"written"` Resources int `json:"resources"` }
+type ScanCandidate struct { Path string `json:"path"` Bytes int64 `json:"bytes"` Tracked bool `json:"tracked"` }
+type ScanRequest struct { Path string `json:"path"` MinimumBytes int64 `json:"minimumBytes"` }
+type ScanResult struct { Candidates []ScanCandidate `json:"candidates"` }
+type SetupRequest struct { Path string `json:"path"` LauncherPath string `json:"launcherPath,omitempty"` RepairLauncher bool `json:"repairLauncher,omitempty"` }
+type SetupResult struct { RepositoryRoot string `json:"repositoryRoot"` LauncherPath string `json:"launcherPath"` GitIntegrationVersion int `json:"gitIntegrationVersion"` LauncherInstalled bool `json:"launcherInstalled,omitempty"` LauncherOutcome LauncherOutcome `json:"launcherOutcome,omitempty"` LegacyLauncherPath string `json:"legacyLauncherPath,omitempty"` LegacyLauncherOutcome LauncherOutcome `json:"legacyLauncherOutcome,omitempty"` ConfigKeys []string `json:"configKeys,omitempty"` HookPath string `json:"hookPath,omitempty"` HookInstalled bool `json:"hookInstalled,omitempty"` HookForeign bool `json:"hookForeign,omitempty"` HookInstructions string `json:"hookInstructions,omitempty"` StateCreated bool `json:"stateCreated,omitempty"` LedgerCreated bool `json:"ledgerCreated,omitempty"` }
+type SharedObject struct { Digest string `json:"digest"` Bytes int64 `json:"bytes"` Users int `json:"users"` SavedBytes int64 `json:"savedBytes"` Paths []string `json:"paths,omitempty"` }
+type StackAddRequest struct { Path string `json:"path"` Remote string `json:"remote"` Ref string `json:"ref,omitempty"` Mount string `json:"mount,omitempty"` Alias string `json:"alias,omitempty"` Optional bool `json:"optional,omitempty"` }
+type StackAddResult struct { Component ComponentProposal `json:"component"` File string `json:"file"` Warnings []string `json:"warnings,omitempty"` }
+type StackInitRequest struct { Path string `json:"path"` Name string `json:"name,omitempty"` Profile string `json:"profile,omitempty"` Adopt bool `json:"adopt,omitempty"` }
+type StackInitResult struct { Root string `json:"root"` StackID string `json:"stackID"` Name string `json:"name"` Profile string `json:"profile"` File string `json:"file"` Adopted bool `json:"adopted"` }
+type StackRescanRequest struct { Path string `json:"path"` Components []string `json:"components,omitempty"` Accept bool `json:"accept,omitempty"` }
+type StackRescanResult struct { Findings []RescanFinding `json:"findings"` Changed bool `json:"changed"` File string `json:"file,omitempty"` }
+type StackStatusRequest struct { Path string `json:"path"` }
+type StackStatusResult struct { StackID string `json:"stackID"` Name string `json:"name"` Profile string `json:"profile"` Root string `json:"root"` Components []ComponentStatus `json:"components"` Releases int `json:"releases"` LatestRelease string `json:"latestRelease,omitempty"` Environments []string `json:"environments"` Targets []string `json:"targets"` }
+type StackSyncRequest struct { Path string `json:"path"` Components []string `json:"components,omitempty"` }
+type StackSyncResult struct { Components []ComponentSync `json:"components"` Fetched int `json:"fetched"` Updated int `json:"updated"` Failed int `json:"failed"` }
+type StackValidateRequest struct { Path string `json:"path"` }
+type StackValidateResult struct { Valid bool `json:"valid"` Components []ComponentStatus `json:"components"` Resources []PlannedResource `json:"resources"` Enabled int `json:"enabled"` Disabled int `json:"disabled"` Problems []CompositionProblem `json:"problems"` Warnings []string `json:"warnings,omitempty"` }
+type Stage string
+type StatsRequest struct { Path string `json:"path"` Selector PathSelector `json:"selector"` Fetch bool `json:"fetch,omitempty"` TopShared int `json:"topShared,omitempty"` }
+type StatsResult struct { Assets int `json:"assets"` Contents int `json:"contents"` LogicalBytes int64 `json:"logicalBytes"` StoredBytes int64 `json:"storedBytes"` SavedBytes int64 `json:"savedBytes"` SavedPercent float64 `json:"savedPercent"` IdenticalFiles int `json:"identicalFiles"` IdenticalFileBytes int64 `json:"identicalFileBytes"` FilesSharingParts int `json:"filesSharingParts"` SharedPartBytes int64 `json:"sharedPartBytes"` SharedObjects int `json:"sharedObjects"` ChunkedAssets int `json:"chunkedAssets"` WholeAssets int `json:"wholeAssets"` Unresolved int `json:"unresolved"` TopShared []SharedObject `json:"topShared,omitempty"` }
+type StatusEntry struct { Path string `json:"path"` State AssetState `json:"state"` IndexDigest string `json:"indexDigest,omitempty"` Size int64 `json:"size,omitempty"` WorkingSize int64 `json:"workingSize,omitempty"` SizeDelta *int64 `json:"sizeDelta,omitempty"` Cached bool `json:"cached"` Published bool `json:"published"` Pending bool `json:"pending,omitempty"` Detail string `json:"detail,omitempty"` Actions []AssetAction `json:"actions,omitempty"` }
+type StatusRequest struct { Path string `json:"path"` Selector PathSelector `json:"selector"` }
+type StatusResult struct { Entries []StatusEntry `json:"entries"` Skipped []ItemOutcome `json:"skipped,omitempty"` }
+type StorageAddRequest struct { Path string `json:"path"` Remote StorageRemoteSpec `json:"remote"` }
+type StorageAddResult struct { Remote StorageRemoteSpec `json:"remote"` }
+type StorageCapability struct { Name string `json:"name"` Supported bool `json:"supported"` Detail string `json:"detail,omitempty"` }
+type StorageListRequest struct { Path string `json:"path"` }
+type StorageListResult struct { Remotes []StorageRemoteSpec `json:"remotes"` }
+type StorageLoginRequest struct { Path string `json:"path"` Remote string `json:"remote"` AccessKeyID string `json:"accessKeyID,omitempty"` SecretAccessKey string `json:"-"` SessionToken string `json:"-"` Profile string `json:"profile,omitempty"` Forget bool `json:"forget,omitempty"` }
+type StorageLoginResult struct { Remote string `json:"remote"` Profile string `json:"profile"` CredentialsFile string `json:"credentialsFile"` AccessKeyID string `json:"accessKeyID,omitempty"` Removed bool `json:"removed,omitempty"` }
+type StorageRemoteSpec struct { Name string `json:"name"` Type string `json:"type"` Endpoint string `json:"endpoint,omitempty"` Bucket string `json:"bucket,omitempty"` Prefix string `json:"prefix,omitempty"` Region string `json:"region,omitempty"` Addressing string `json:"addressing,omitempty"` LocalPath string `json:"localPath,omitempty"` RequiredForPublication bool `json:"requiredForPublication"` Local bool `json:"local"` Committed bool `json:"committed"` Bound bool `json:"bound"` CredentialProfile string `json:"credentialProfile,omitempty"` HasCredentials bool `json:"hasCredentials,omitempty"` }
+type StorageTestRequest struct { Path string `json:"path"` Remote string `json:"remote"` }
+type StorageTestResult struct { Remote string `json:"remote"` Capabilities []StorageCapability `json:"capabilities"` }
+type Target struct { Name string `json:"name"` File string `json:"file"` Release string `json:"release"` Environment string `json:"environment"` AgentID string `json:"agentID"` Authority string `json:"authority"` RuntimeRef string `json:"runtimeRef"` Keep int `json:"keep"` SecretProvider string `json:"secretProvider"` Created bool `json:"created,omitempty"` Changed bool `json:"changed,omitempty"` PreviousRelease string `json:"previousRelease,omitempty"` ReleaseExists bool `json:"releaseExists"` Enabled int `json:"enabled,omitempty"` EnvironmentRevision int `json:"environmentRevision,omitempty"` Warnings []string `json:"warnings,omitempty"` }
+type TargetDeploymentHistory struct { Target string `json:"target"` DeployRoot string `json:"deployRoot"` CurrentRealizationID string `json:"currentRealizationID,omitempty"` LastKnownGoodRealizationID string `json:"lastKnownGoodRealizationID,omitempty"` Deployments []DeploymentRecord `json:"deployments"` }
+type TargetListRequest struct { Path string `json:"path"` }
+type TargetListResult struct { Targets []Target `json:"targets"` }
+type TargetSetRequest struct { Path string `json:"path"` Name string `json:"name"` Release string `json:"release,omitempty"` Environment string `json:"environment,omitempty"` AgentID string `json:"agentID,omitempty"` RuntimeRef string `json:"runtimeRef,omitempty"` Keep int `json:"keep,omitempty"` SecretProvider string `json:"secretProvider,omitempty"` }
+type TargetShowRequest struct { Path string `json:"path"` Name string `json:"name"` }
+type TrackRequest struct { Path string `json:"path"` Selector PathSelector `json:"selector"` Force bool `json:"force,omitempty"` }
+type TrackResult struct { RulesAdded []string `json:"rulesAdded"` RulesPresent []string `json:"rulesPresent"` }
+type TrackingCheckRequest struct { Path string `json:"path"` File string `json:"file"` }
+type TrackingCheckResult struct { File string `json:"file"` Tracked bool `json:"tracked"` MatchedRule string `json:"matchedRule,omitempty"` RuleSource string `json:"ruleSource,omitempty"` AttributesRaw string `json:"attributesRaw,omitempty"` }
+type TransferProgress struct { Determinate bool `json:"determinate"` TotalBytes int64 `json:"totalBytes"` CompletedBytes int64 `json:"completedBytes"` WireBytes int64 `json:"wireBytes"` ReusedItems int `json:"reusedItems"` ReusedBytes int64 `json:"reusedBytes"` BytesPerSecond float64 `json:"bytesPerSecond"` WireBytesPerSecond float64 `json:"wireBytesPerSecond"` AverageBytesPerSecond float64 `json:"averageBytesPerSecond"` AverageWireBytesPerSecond float64 `json:"averageWireBytesPerSecond"` ETA time.Duration `json:"eta,omitempty"` ETAKnown bool `json:"etaKnown"` ActiveItems int `json:"activeItems"` }
+type UntrackRequest = TrackRequest
+type UntrackResult struct { RulesRemoved []string `json:"rulesRemoved"` PathsRequiringHydration []string `json:"pathsRequiringHydration"` RulesMissing []string `json:"rulesMissing,omitempty"` }
+type UpgradeMode string
+type UpgradeRequest struct { Path string `json:"path"` Mode UpgradeMode `json:"mode"` RepairLauncher bool `json:"repairLauncher,omitempty"` }
+type UpgradeRequired struct { InstalledVersion string `json:"installedVersion"` RequiredVersion string `json:"requiredVersion"` Repository string `json:"repository,omitempty"` Reason string `json:"reason"` UpgradeCommand string `json:"upgradeCommand"` }
+type UpgradeResult struct { RepositoryRoot string `json:"repositoryRoot"` UpToDate bool `json:"upToDate"` Steps []UpgradeStep `json:"steps"` Applied bool `json:"applied"` AppliedSteps []UpgradeStep `json:"appliedSteps,omitempty"` Notes []string `json:"notes,omitempty"` InstalledVersion string `json:"installedVersion,omitempty"` MinimumFXVCSVersion string `json:"minimumFXVCSVersion,omitempty"` LauncherPath string `json:"launcherPath,omitempty"` }
+type UpgradeStep struct { Kind string `json:"kind"` Target string `json:"target"` FromVersion string `json:"fromVersion"` ToVersion string `json:"toVersion"` ExpectedBefore string `json:"expectedBefore,omitempty"` Description string `json:"description"` }
+type ValidationIssue struct { Path string `json:"path"` Message string `json:"message"` }
+type VerifyIssue struct { Path string `json:"path"` Code Code `json:"code"` Message string `json:"message"` Digest string `json:"digest,omitempty"` }
+type VerifyRequest struct { Path string `json:"path"` Selector PathSelector `json:"selector"` Remote bool `json:"remote,omitempty"` }
+type VerifyResult struct { Checked int `json:"checked"` Issues []VerifyIssue `json:"issues"` }
+var Version

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/input-source.schema.json",
+  "title": "InputSource (template hook input)",
+  "description": "Discriminated union consumed by the template.v1 InputResolver. Exactly one of secret, target, release, or literal is present. Raw file paths and live URLs are deliberately not source kinds.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "secret": { "$ref": "#/$defs/secretRef" },
+    "target": { "$ref": "#/$defs/documentPath" },
+    "release": { "$ref": "#/$defs/documentPath" },
+    "literal": { "type": "string" }
+  },
+  "oneOf": [
+    { "required": ["secret"] },
+    { "required": ["target"] },
+    { "required": ["release"] },
+    { "required": ["literal"] }
+  ],
+  "$defs": {
+    "secretRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "key"],
+      "properties": {
+        "namespace": { "$ref": "common.schema.json#/$defs/kebab" },
+        "key": { "$ref": "common.schema.json#/$defs/kebab" }
+      }
+    },
+    "documentPath": {
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)*$",
+      "description": "Schema-checked dotted path into the target or release document, e.g. server.hostname or id."
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/asset-index-v1.schema.json",
+  "title": "FXVCS asset index, format version 1 (canonical JSON)",
+  "description": "Derived from a pinned Git tree: every FXVCS-managed entry with its normalized path, Git mode, and the SHA-256 of the exact pointer bytes, sorted by path in byte order with no duplicates. Its canonical-JSON digest is the component assetRoot recorded in a Release.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["formatVersion", "storageDomainID", "entries"],
+  "properties": {
+    "formatVersion": { "type": "integer", "const": 1 },
+    "storageDomainID": { "type": "string", "pattern": "^domain_[0-9A-Za-z][0-9A-Za-z_-]{0,62}$" },
+    "entries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/entry" },
+      "description": "Sorted by path (byte order), strictly increasing; verified semantically."
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mode", "pointerDigest"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1, "pattern": "^(?:[^/\\\\]+)(?:/[^/\\\\]+)*$" },
+        "mode": { "type": "string", "enum": ["100644", "100755"] },
+        "pointerDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    }
+  }
+}

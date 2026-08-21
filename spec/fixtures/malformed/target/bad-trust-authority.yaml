@@ -1,0 +1,18 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Target
+metadata:
+  name: dev
+spec:
+  release: v1.4.0
+  environment: dev
+  agentID: agent-host-a
+  authority: gitops
+  runtimeRef: fxserver-dev
+  retention:
+    keep: 5
+  secrets:
+    defaultProvider: local-file
+  trust:
+    coordination:
+      authority: branch-tip
+      signatures: required

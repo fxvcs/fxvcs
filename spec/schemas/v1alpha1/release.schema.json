@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/release.schema.json",
+  "title": "Release (releases/<name>.yaml)",
+  "description": "Immutable release: pinned components (commit, assetRoot, descriptor, mount), snapshotted non-component resources, and the fully resolved activation plan in ensure order. Identity is the canonical semantic encoding, never the YAML bytes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": { "$ref": "common.schema.json#/$defs/apiVersion" },
+    "kind": { "const": "Release" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "createdAt", "createdBy"],
+      "properties": {
+        "name": { "$ref": "common.schema.json#/$defs/releaseName" },
+        "createdAt": { "$ref": "common.schema.json#/$defs/rfc3339utc" },
+        "createdBy": { "type": "string", "minLength": 1 }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stackID", "sourceSetDigest", "components", "runtimeResources", "resources"],
+      "properties": {
+        "stackID": { "$ref": "common.schema.json#/$defs/stackID" },
+        "minimumFXVCSVersion": { "$ref": "common.schema.json#/$defs/semver" },
+        "sourceSetDigest": { "$ref": "common.schema.json#/$defs/digest" },
+        "variantOf": { "$ref": "common.schema.json#/$defs/releaseName" },
+        "components": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/releaseComponent" }
+        },
+        "runtimeResources": {
+          "type": "array",
+          "items": { "$ref": "runtime-resource-catalog.schema.json#/$defs/releaseRuntimeResource" }
+        },
+        "resources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/releaseResource" }
+        },
+        "signature": { "$ref": "#/$defs/releaseSignature" }
+      }
+    }
+  },
+  "$defs": {
+    "releaseComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repositoryID", "repositoryName", "remote", "commit", "assetRoot",
+        "storageDomainID", "descriptor", "descriptorFrom", "mount"
+      ],
+      "properties": {
+        "repositoryID": { "$ref": "common.schema.json#/$defs/repositoryID" },
+        "repositoryName": { "$ref": "common.schema.json#/$defs/displayName" },
+        "remote": { "$ref": "stack.schema.json#/$defs/gitRemote" },
+        "commit": { "$ref": "common.schema.json#/$defs/commit" },
+        "assetRoot": { "$ref": "common.schema.json#/$defs/digest" },
+        "storageDomainID": { "$ref": "common.schema.json#/$defs/storageDomainID" },
+        "descriptor": { "$ref": "common.schema.json#/$defs/componentDescriptor" },
+        "descriptorFrom": { "type": "string", "enum": ["component", "stack-override"] },
+        "mount": { "$ref": "common.schema.json#/$defs/mountPath" }
+      }
+    },
+    "releaseResource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "name", "activation", "activationSource", "ensureOrder"],
+      "properties": {
+        "source": { "$ref": "common.schema.json#/$defs/resourceSource" },
+        "repositoryID": { "$ref": "common.schema.json#/$defs/repositoryID" },
+        "repositoryName": { "$ref": "common.schema.json#/$defs/displayName" },
+        "path": { "$ref": "common.schema.json#/$defs/relativePath" },
+        "resourceID": { "$ref": "common.schema.json#/$defs/resourceID" },
+        "name": { "$ref": "common.schema.json#/$defs/resourceName" },
+        "activation": { "$ref": "common.schema.json#/$defs/resolvedActivation" },
+        "activationSource": { "$ref": "common.schema.json#/$defs/activationSource" },
+        "after": { "$ref": "common.schema.json#/$defs/nameList" },
+        "before": { "$ref": "common.schema.json#/$defs/nameList" },
+        "dependencies": { "$ref": "common.schema.json#/$defs/nameList" },
+        "provides": { "$ref": "common.schema.json#/$defs/nameList" },
+        "ensureOrder": { "type": "integer", "minimum": 0 }
+      },
+      "if": { "properties": { "source": { "const": "component" } } },
+      "then": {
+        "required": ["repositoryID", "repositoryName", "path"],
+        "properties": { "resourceID": false }
+      },
+      "else": {
+        "required": ["resourceID"],
+        "properties": { "repositoryID": false, "repositoryName": false, "path": false }
+      }
+    },
+    "releaseSignature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "signatures"],
+      "properties": {
+        "profile": { "type": "string", "enum": ["ssh-ed25519-v1"] },
+        "signatures": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

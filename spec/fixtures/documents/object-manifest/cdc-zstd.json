@@ -1,0 +1,12 @@
+{
+  "formatVersion": 1,
+  "storageDomainID": "domain_01K2FY",
+  "encoding": "cdc-fastcdc/1",
+  "compression": "zstd/1",
+  "oid": "sha256:18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4",
+  "size": 300,
+  "chunks": [
+    { "digest": "sha256:3f79bb7b435b05321651daefd374cdc681dc06faa65e374e38337b88ca046dea", "rawSize": 100, "encodedSize": 80 },
+    { "digest": "sha256:252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111", "rawSize": 200, "encodedSize": 150 }
+  ]
+}

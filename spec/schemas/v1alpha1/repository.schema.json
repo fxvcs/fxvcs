@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/repository.schema.json",
+  "title": "Repository (.fxvcs/repository.yaml)",
+  "description": "Committed component/repository configuration: stable identities, profile, accepted FiveM layout descriptor, and non-secret storage remotes. Credentials never appear here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": { "$ref": "common.schema.json#/$defs/apiVersion" },
+    "kind": { "const": "Repository" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositoryID", "storageDomainID", "name"],
+      "properties": {
+        "repositoryID": { "$ref": "common.schema.json#/$defs/repositoryID" },
+        "storageDomainID": { "$ref": "common.schema.json#/$defs/storageDomainID" },
+        "name": { "$ref": "common.schema.json#/$defs/displayName" }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "minimumFXVCSVersion", "gitIntegrationVersion", "storage"],
+      "properties": {
+        "profile": { "$ref": "common.schema.json#/$defs/profile" },
+        "minimumFXVCSVersion": { "$ref": "common.schema.json#/$defs/semver" },
+        "gitIntegrationVersion": { "type": "integer", "minimum": 1 },
+        "sourceRoot": { "$ref": "common.schema.json#/$defs/sourceRoot" },
+        "layout": { "$ref": "common.schema.json#/$defs/layout" },
+        "resourceName": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "description": "Required (string) for layout single; must be absent or null otherwise."
+        },
+        "storage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["remotes"],
+          "properties": {
+            "remotes": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/storageRemote" }
+            }
+          }
+        },
+        "tracking": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Committed tracking preferences maintained by track/untrack and honoured by upgrade.",
+          "properties": {
+            "disabledPresets": {
+              "type": "array",
+              "description": "Profile preset patterns this repository opted out of; upgrade never re-adds them.",
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "profile": { "const": "fivem" } } },
+          "then": { "required": ["sourceRoot", "layout"] },
+          "else": {
+            "properties": {
+              "sourceRoot": false,
+              "layout": false,
+              "resourceName": false
+            }
+          }
+        },
+        {
+          "if": { "required": ["layout"], "properties": { "layout": { "const": "single" } } },
+          "then": {
+            "required": ["resourceName"],
+            "properties": { "resourceName": { "type": "string" } }
+          },
+          "else": {
+            "properties": { "resourceName": { "type": "null" } }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "storageRemote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "requiredForPublication"],
+      "description": "Non-secret shared remote descriptor. filesystem: machine-local directory bound per clone; s3: bring-your-own S3-compatible bucket (endpoint/bucket/prefix committed, credentials local); fxvcs-cloud: hosted storage resolved from the control plane by storageDomainID (nothing provider-specific is committed; the login session is the binding).",
+      "properties": {
+        "name": { "$ref": "common.schema.json#/$defs/kebab" },
+        "type": { "type": "string", "enum": ["filesystem", "s3", "fxvcs-cloud"] },
+        "endpoint": { "type": "string", "minLength": 1 },
+        "bucket": { "type": "string", "minLength": 1 },
+        "prefix": { "type": "string" },
+        "region": { "type": "string", "minLength": 1, "description": "S3 region. Providers that ignore regions still require a syntactically valid one for Signature V4; \"auto\" is the documented value for R2 and MinIO." },
+        "addressing": { "type": "string", "enum": ["path", "virtual-host"] },
+        "requiredForPublication": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "s3" } } },
+          "then": { "required": ["bucket"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "filesystem" } } },
+          "then": { "properties": { "bucket": false, "addressing": false, "region": false } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "fxvcs-cloud" } } },
+          "then": { "properties": { "endpoint": false, "bucket": false, "prefix": false, "addressing": false, "region": false } }
+        }
+      ]
+    }
+  }
+}

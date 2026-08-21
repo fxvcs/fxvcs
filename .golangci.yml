@@ -1,0 +1,120 @@
+# golangci-lint v2 configuration (https://golangci-lint.run/usage/configuration/).
+# Run with `make lint`. CI installs golangci-lint v2.x (see .github/workflows/ci.yml).
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+
+linters:
+  default: none
+  enable:
+    - govet
+    - errcheck
+    - staticcheck # includes the former gosimple and stylecheck checks in v2
+    - unused
+    - ineffassign
+    - gosec
+    - revive
+    - misspell
+    - gocritic
+  settings:
+    govet:
+      enable:
+        - nilness
+    errcheck:
+      check-type-assertions: false
+      check-blank: false
+      exclude-functions:
+        - (io.Closer).Close
+        - (*os.File).Close
+        - (io.Writer).Write
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Fprint
+        - io.WriteString
+    gosec:
+      excludes:
+        - G104 # duplicates errcheck
+        - G304 # file inclusion via variable: every path passes pathsafe; reviewed case by case
+        - G115 # integer overflow conversion: too noisy for stat/size plumbing; reviewed case by case
+        - G204 # subprocess with variable args: internal/gitclient exists to exec git; argv is never shell text
+        - G301 # directory permissions: caches and realizations are deliberately 0755; secret-bearing
+        - G302 #   writes use explicit 0600 and are covered by dedicated tests (threat model T7/T9)
+        - G306 #   (same as above)
+        - G602 # slice bounds: false positives on length-checked indexing
+    revive:
+      severity: warning
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: exported
+          arguments: ["checkPrivateReceivers", "disableStutteringCheck"]
+        - name: increment-decrement
+        - name: var-naming
+        - name: var-declaration
+        - name: package-comments
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: unexported-return
+        - name: indent-error-flow
+        - name: errorf
+        - name: empty-block
+        - name: superfluous-else
+        - name: unreachable-code
+        - name: redefines-builtin-id
+    misspell:
+      # No locale: the codebase mixes UK/US spelling deliberately (e.g. sdk "cancelled");
+      # only unambiguous misspellings are reported.
+      ignore-rules:
+        - cancelled
+        - cancelling
+    gocritic:
+      enabled-tags:
+        - diagnostic
+      disabled-checks:
+        - commentedOutCode
+        - hugeParam
+        - unnamedResult
+      settings:
+        ifElseChain:
+          minThreshold: 3
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - std-error-handling
+    rules:
+      # Tests may use weak randomness, fixed permissions, and ignore some errors.
+      - path: _test\.go
+        linters:
+          - gosec
+          - errcheck
+      # Golden/fixture helpers legitimately write 0o644 files.
+      - path: (testdata|fixtures)/
+        linters:
+          - gosec
+
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: lax
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+output:
+  formats:
+    text:
+      path: stdout
+      print-linter-name: true
+      print-issued-lines: true

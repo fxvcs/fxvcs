@@ -1,0 +1,8 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Environment
+metadata:
+  name: prd
+spec:
+  inputs:
+    hostname: Example Production
+  secretScope: prd

@@ -1,0 +1,23 @@
+# Hosted storage remote: nothing provider-specific is committed; the client
+# resolves bucket and credentials from the control plane by storageDomainID.
+apiVersion: fxvcs.dev/v1alpha1
+kind: Repository
+metadata:
+  repositoryID: repo_cloud_01
+  storageDomainID: domain_cloud_01
+  name: cloud-backed
+spec:
+  profile: generic
+  minimumFXVCSVersion: 0.1.0
+  gitIntegrationVersion: 1
+  storage:
+    remotes:
+      - name: cloud
+        type: fxvcs-cloud
+        requiredForPublication: true
+      - name: mirror
+        type: s3
+        endpoint: https://s3.eu-central-1.amazonaws.com
+        bucket: my-own-mirror
+        prefix: fxvcs/domain_cloud_01/
+        requiredForPublication: false

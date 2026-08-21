@@ -1,0 +1,130 @@
+# FXVCS tool pins and developer tasks (https://mise.jdx.dev).
+#   mise install        install pinned tools
+#   mise tasks          list tasks
+#   mise run ci         what CI runs on Linux
+# Tasks are POSIX sh one-liners so they also run under Git Bash on Windows.
+
+[tools]
+# Must match the toolchain line in go.mod (go 1.26 -> latest 1.26.x patch).
+go = "1.26.6"
+# Registry name "golangci-lint" resolves to aqua:golangci/golangci-lint. v2 config format.
+golangci-lint = "2.12.2"
+
+[env]
+_.path = ["{{config_root}}/bin"]
+
+[tasks.fmt-check]
+description = "Fail if any Go file needs gofmt"
+run = 'out="$(gofmt -l . | grep -v "^vendor/" || true)"; if [ -n "$out" ]; then echo "gofmt needed:"; echo "$out"; exit 1; fi'
+
+[tasks.fmt]
+description = "List then rewrite Go files with gofmt -w"
+run = ['gofmt -l . || true', 'gofmt -w .']
+
+[tasks.vet]
+description = "go vet ./..."
+run = 'go vet ./...'
+
+[tasks.lint]
+description = "golangci-lint run ./... (.golangci.yml, v2 format)"
+run = 'golangci-lint run ./...'
+
+[tasks.test]
+description = "go test ./..."
+run = 'go test ./...'
+
+[tasks.test-race]
+description = "go test -race ./... (needs cgo on some platforms; not run on Windows CI)"
+run = 'go test -race ./...'
+
+[tasks.test-short]
+description = "go test -short ./... (skips slow fixtures)"
+run = 'go test -short ./...'
+
+[tasks.build]
+description = "Build bin/fxvcs with sdk.Version=$VERSION (default: git describe of a tag, else 0.0.0-dev+<commit>)"
+run = '''
+# The version has to parse as semver: it drives the upgrade gate and every
+# format-compatibility check, and a binary carrying anything else refuses to
+# run them. `git describe --always` falls back to a bare commit hash, which is
+# not empty and not semver, so it must not be used here — ask for a tag, and
+# when there is none build a dev version that still names the commit.
+v="${VERSION:-$(git describe --tags --dirty 2>/dev/null || true)}"
+if [ -z "$v" ]; then
+  rev="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+  git diff --quiet 2>/dev/null || rev="$rev.dirty"
+  v="0.0.0-dev+$rev"
+fi
+case "$v" in
+  v[0-9]*.[0-9]*.[0-9]*|[0-9]*.[0-9]*.[0-9]*) ;;
+  *) echo "refusing to build: version $v is not semantic (major.minor.patch)" >&2; exit 1 ;;
+esac
+mkdir -p bin
+exe=""; case "$(go env GOOS)" in windows) exe=.exe;; esac
+echo "building bin/fxvcs$exe (sdk.Version=$v)"
+go build -trimpath -ldflags "-X fxvcs.dev/fxvcs/sdk.Version=$v" -o "bin/fxvcs$exe" ./cmd/fxvcs
+'''
+
+[tasks.install]
+description = "Install fxvcs into $GOPATH/bin (not mise's GOBIN) so it works outside this repo"
+run = '''
+# Semver or nothing: see the note in tasks.build. `--always` yields a bare
+# commit hash, which is not empty and not semver, so the old fallback for an
+# empty value never fired and the installed binary refused every command that
+# compares versions.
+v="${VERSION:-$(git describe --tags --dirty 2>/dev/null || true)}"
+if [ -z "$v" ]; then
+  rev="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+  git diff --quiet 2>/dev/null || rev="$rev.dirty"
+  v="0.0.0-dev+$rev"
+fi
+case "$v" in
+  v[0-9]*.[0-9]*.[0-9]*|[0-9]*.[0-9]*.[0-9]*) ;;
+  *) echo "refusing to install: version $v is not semantic (major.minor.patch)" >&2; exit 1 ;;
+esac
+# mise exports GOBIN=<mise go install>/bin, which is Go-version-scoped and
+# shadows $GOPATH/bin on PATH. Install to $GOPATH/bin explicitly so the binary
+# survives a Go upgrade and resolves the same everywhere.
+target="${FXVCS_INSTALL_DIR:-$(go env GOPATH)/bin}"
+exe=""; case "$(go env GOOS)" in windows) exe=.exe;; esac
+mkdir -p "$target"
+echo "installing $target/fxvcs$exe (sdk.Version=$v)"
+GOBIN="$target" go install -trimpath -ldflags "-X fxvcs.dev/fxvcs/sdk.Version=$v" ./cmd/fxvcs
+# Report any fxvcs earlier on PATH that would win over the one just installed.
+shadow=""
+IFS=:; for d in $PATH; do
+  [ -n "$d" ] || continue
+  case "$d" in "$target") break;; esac
+  if [ -x "$d/fxvcs$exe" ]; then shadow="$d/fxvcs$exe"; break; fi
+done
+unset IFS
+if [ -n "$shadow" ]; then
+  echo
+  echo "WARNING: $shadow comes earlier on PATH and will still be the one that runs."
+  echo "         It is a stale copy (mise sets GOBIN there). Remove it with:"
+  echo "           rm $shadow"
+else
+  echo "installed; $(command -v fxvcs 2>/dev/null || echo "$target/fxvcs$exe") is now first on PATH"
+fi
+'''
+
+[tasks.tidy-check]
+description = "go mod tidy must not change go.mod/go.sum"
+run = ['go mod tidy', 'git diff --exit-code -- go.mod go.sum']
+
+[tasks.fixtures-update]
+description = "Regenerate golden fixtures (only packages that declare -update); review the diff afterwards"
+run = '''
+for p in ./sdk ./internal/state ./internal/profile/fivem/discovery ./internal/filter; do
+  echo "== $p"; go test "$p" -update || exit 1
+done
+echo "Golden fixtures rewritten; review the diff before committing (docs/development.md)."
+'''
+
+[tasks.ci]
+description = "fmt-check, vet, lint, test (what CI runs on Linux)"
+depends = ["fmt-check", "vet", "lint", "test"]
+
+[tasks.clean]
+description = "Remove bin/ and test artifacts"
+run = 'rm -rf bin coverage.* ./*.test ./*.out'

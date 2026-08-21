@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "objects": [
+    {
+      "digest": "sha256:3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d",
+      "size": 1048576,
+      "storageDomainID": "domain_maps_01",
+      "pending": true,
+      "referrers": [
+        { "commit": "fedcba9876543210fedcba9876543210fedcba98", "path": "city-map/stream/city.ymap" }
+      ],
+      "remotes": {
+        "primary": { "published": false, "publishedAt": null }
+      }
+    }
+  ]
+}

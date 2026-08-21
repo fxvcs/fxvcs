@@ -1,0 +1,189 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.release.tag_name || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  GOTOOLCHAIN: local
+  GOFLAGS: -mod=readonly
+  MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
+  RELEASE_VERSION: ${{ github.event.release.tag_name || github.ref_name }}
+
+jobs:
+  verify:
+    name: Verify release tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_VERSION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - name: Validate tag and source
+        env:
+          VERSION: ${{ env.RELEASE_VERSION }}
+        run: |
+          if [[ ! "$VERSION" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            echo "release tags must be v-prefixed semantic versions; got $VERSION" >&2
+            exit 1
+          fi
+          tag_sha="$(git rev-list -n 1 "$VERSION")"
+          test "$(git rev-parse HEAD)" = "$tag_sha"
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            test "$tag_sha" = "$GITHUB_SHA"
+          fi
+
+      - name: Test, lint, and vet
+        run: mise run ci
+
+      - name: Check module files
+        run: mise run tidy-check
+
+  build:
+    name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
+    needs: verify
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+          - goos: windows
+            goarch: amd64
+          - goos: windows
+            goarch: arm64
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_VERSION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - name: Build and package
+        env:
+          VERSION: ${{ env.RELEASE_VERSION }}
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: ./scripts/package-release.sh
+
+      - name: Verify embedded version
+        if: matrix.goos == 'linux' && matrix.goarch == 'amd64'
+        env:
+          VERSION: ${{ env.RELEASE_VERSION }}
+        run: |
+          actual="$(./bin/fxvcs --version | awk '{print $NF}')"
+          test "$actual" = "$VERSION"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/fxvcs_*
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: dist
+          merge-multiple: true
+
+      - name: Generate SHA256 checksums
+        run: |
+          cd dist
+          sha256sum fxvcs_*.tar.gz fxvcs_*.zip | sort -k2 > SHA256SUMS
+          sha256sum --check SHA256SUMS
+
+      - name: Attach builds to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ env.RELEASE_VERSION }}
+        run: |
+          shopt -s nullglob
+          assets=(dist/fxvcs_*.tar.gz dist/fxvcs_*.zip dist/SHA256SUMS)
+          if (( ${#assets[@]} != 7 )); then
+            echo "expected six archives and SHA256SUMS, got ${#assets[@]} files" >&2
+            printf '  %s\n' "${assets[@]}" >&2
+            exit 1
+          fi
+
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            mapfile -t existing < <(
+              gh release view "$VERSION" --json assets --jq '.assets[].name'
+            )
+            missing=()
+            for asset in "${assets[@]}"; do
+              name="${asset##*/}"
+              found=false
+              for published in "${existing[@]}"; do
+                if [[ "$published" == "$name" ]]; then
+                  found=true
+                  break
+                fi
+              done
+              if [[ "$found" == false ]]; then
+                missing+=("$asset")
+              fi
+            done
+            if (( ${#missing[@]} > 0 )); then
+              gh release upload "$VERSION" "${missing[@]}"
+            else
+              echo "release $VERSION already has every expected asset"
+            fi
+          else
+            prerelease=()
+            if [[ "$VERSION" == *-* ]]; then
+              prerelease=(--prerelease)
+            fi
+            gh release create "$VERSION" "${assets[@]}" \
+              --verify-tag \
+              --generate-notes \
+              --title "fxvcs $VERSION" \
+              "${prerelease[@]}"
+          fi
+
+      - name: Publish checksum summary
+        run: |
+          {
+            echo "## Release checksums"
+            echo
+            echo '```text'
+            cat dist/SHA256SUMS
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

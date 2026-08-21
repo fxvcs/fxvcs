@@ -1,0 +1,11 @@
+{
+  "path": "city-map/stream/city.ymap",
+  "intent": "hydrated",
+  "indexPointerDigest": "sha256:aaa9402664f1a41f40ebbc52c9993eb66aeb366602958fdfaa283b71e64db123",
+  "workingDigest": "sha256:3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d",
+  "size": 1048576,
+  "mtime": 1772366400000000000,
+  "fileID": "16777220:1234567",
+  "lastVerified": "2026-03-01T12:00:00Z",
+  "generation": 7
+}

@@ -1,0 +1,141 @@
+# docs/product-scope.md §8 "Releases" example, completed with the fields the
+# schema requires. sourceSetDigest is computed by integrity.SourceSetDigest.
+apiVersion: fxvcs.dev/v1alpha1
+kind: Release
+metadata:
+  name: v1.4.0
+  createdAt: 2026-03-01T12:00:00Z
+  createdBy: release-bot
+spec:
+  stackID: stack_server_deployments
+  minimumFXVCSVersion: 0.1.0
+  sourceSetDigest: sha256:96bfd2977f23f312f2c0c319330374ba6dac247d846e02c137d17f0adfae9529
+  components:
+    - repositoryID: repo_core_01
+      repositoryName: core
+      remote: https://git.example.com/fivem/core.git
+      commit: 0123456789abcdef0123456789abcdef01234567
+      assetRoot: sha256:ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb
+      storageDomainID: domain_core_01
+      descriptor:
+        sourceRoot: .
+        layout: collection
+      descriptorFrom: component
+      mount: resources/[core]
+    - repositoryID: repo_tools_01
+      repositoryName: tools
+      remote: https://git.example.com/fivem/tools.git
+      commit: 89abcdef0123456789abcdef0123456789abcdef
+      assetRoot: sha256:3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d
+      storageDomainID: domain_tools_01
+      descriptor:
+        sourceRoot: .
+        layout: collection
+      descriptorFrom: component
+      mount: resources/[tools]
+    - repositoryID: repo_maps_01
+      repositoryName: maps
+      remote: git@git.example.com:fivem/maps.git
+      commit: fedcba9876543210fedcba9876543210fedcba98
+      assetRoot: sha256:2e7d2c03a9507ae265ecf5b5356885a53393a2029d241394997265a1a25aefc6
+      storageDomainID: domain_maps_01
+      descriptor:
+        sourceRoot: .
+        layout: collection
+      descriptorFrom: component
+      mount: resources/[maps]
+    - repositoryID: repo_inventory_01
+      repositoryName: inventory
+      remote: ssh://git@git.example.com/fivem/inventory.git
+      commit: 00000000000000000000000000000000000000000000000000000000000000a1
+      assetRoot: sha256:18ac3e7343f016890c510e93f935261169d9e3f565436429830faf0934f4f8e4
+      storageDomainID: domain_inventory_01
+      descriptor:
+        sourceRoot: src
+        layout: single
+        resourceName: inventory
+      descriptorFrom: stack-override
+      mount: resources/[inventory]/inventory
+  runtimeResources:
+    - id: runtime:system/monitor
+      name: monitor
+      source: runtime
+      activation: enabled
+    - id: external:host/custom-anticheat
+      name: custom-anticheat
+      source: external
+      activation: enabled
+      verifier:
+        contract: resource-present
+        version: 1
+      lifecycle:
+        ownership: external
+        actions: observe-only
+    - id: external:cfx-server-data/mapmanager
+      name: mapmanager
+      source: external
+      activation: enabled
+      verifier:
+        contract: resource-present
+        version: 1
+      lifecycle:
+        ownership: external
+        actions: observe-only
+  resources:
+    - source: runtime
+      resourceID: runtime:system/monitor
+      name: monitor
+      activation: enabled
+      activationSource: runtime-catalog
+      ensureOrder: 0
+    - source: component
+      repositoryID: repo_core_01
+      repositoryName: core
+      path: chat
+      name: chat
+      activation: enabled
+      activationSource: component
+      ensureOrder: 1
+    - source: component
+      repositoryID: repo_tools_01
+      repositoryName: tools
+      path: map-editor
+      name: map-editor
+      activation: disabled
+      activationSource: coordination-override
+      after: [chat]
+      ensureOrder: 2
+    - source: component
+      repositoryID: repo_maps_01
+      repositoryName: maps
+      path: city-map
+      name: city-map
+      activation: enabled
+      activationSource: release-override
+      after: [mapmanager]
+      dependencies: [mapmanager]
+      ensureOrder: 3
+    - source: external
+      resourceID: external:host/custom-anticheat
+      name: custom-anticheat
+      activation: enabled
+      activationSource: runtime-catalog
+      ensureOrder: 4
+    - source: component
+      repositoryID: repo_inventory_01
+      repositoryName: inventory
+      path: inventory
+      name: inventory
+      activation: enabled
+      activationSource: component
+      after: [chat]
+      before: [custom-anticheat]
+      ensureOrder: 5
+    - source: component
+      repositoryID: repo_core_01
+      repositoryName: core
+      path: chat
+      name: chat-2
+      activation: enabled
+      activationSource: component
+      ensureOrder: 6

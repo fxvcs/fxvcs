@@ -1,0 +1,8 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Environment
+metadata:
+  name: local
+spec:
+  revision: 3
+  inputs: {}
+  secretScope: local

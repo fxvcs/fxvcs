@@ -1,0 +1,13 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Repository
+metadata:
+  repositoryID: repo_maps_01
+  storageDomainID: domain_maps_01
+  name: maps
+  1: one
+spec:
+  profile: generic
+  minimumFXVCSVersion: 0.1.0
+  gitIntegrationVersion: 1
+  storage:
+    remotes: []

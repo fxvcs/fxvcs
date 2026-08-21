@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/resource-overrides.schema.json",
+  "title": "ResourceOverrides (coordination sparse activation overrides)",
+  "description": "Composition-specific overrides keyed by stable identity. Only activation, after, and before may be set; identity, source, dependencies, provides, games and persistent paths cannot be rewritten by coordination.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "spec"],
+  "properties": {
+    "apiVersion": { "$ref": "common.schema.json#/$defs/apiVersion" },
+    "kind": { "const": "ResourceOverrides" },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resources"],
+      "properties": {
+        "resources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/resourceOverride" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "resourceOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repositoryID": { "$ref": "common.schema.json#/$defs/repositoryID" },
+        "path": { "$ref": "common.schema.json#/$defs/relativePath" },
+        "resourceID": { "$ref": "common.schema.json#/$defs/resourceID" },
+        "activation": { "$ref": "common.schema.json#/$defs/activation" },
+        "after": { "$ref": "common.schema.json#/$defs/nameList" },
+        "before": { "$ref": "common.schema.json#/$defs/nameList" }
+      },
+      "oneOf": [
+        {
+          "description": "Component identity: repositoryID + path, no resourceID.",
+          "required": ["repositoryID", "path"],
+          "not": { "required": ["resourceID"] }
+        },
+        {
+          "description": "Runtime/external identity: resourceID only.",
+          "required": ["resourceID"],
+          "not": { "anyOf": [ { "required": ["repositoryID"] }, { "required": ["path"] } ] }
+        }
+      ],
+      "anyOf": [
+        { "required": ["activation"] },
+        { "required": ["after"] },
+        { "required": ["before"] }
+      ]
+    }
+  }
+}

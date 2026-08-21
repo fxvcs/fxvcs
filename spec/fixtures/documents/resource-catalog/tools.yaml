@@ -1,0 +1,45 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: ResourceCatalog
+metadata:
+  repositoryID: repo_tools_01
+spec:
+  resources:
+    - path: admin-tools
+      name: admin-tools
+      activation: enabled
+      after: []
+      before: []
+      provides: [admin]
+      dependencies: []
+      games: [gta5, rdr3]
+      serverOnly: true
+      persistentPaths: [data/logs, data/bans.json]
+      persistentPathKinds:
+        data/logs: directory
+        data/bans.json: file
+      mutableMode: immutable
+      status: present
+    - path: "[editors]/map-editor"
+      name: map-editor
+      activation: pending
+      after: [admin-tools]
+      before: []
+      provides: []
+      dependencies: [admin-tools]
+      games: [gta5]
+      serverOnly: false
+      persistentPaths: []
+      mutableMode: copy
+      status: present
+    - path: legacy-scoreboard
+      name: legacy-scoreboard
+      activation: disabled
+      after: []
+      before: [admin-tools]
+      provides: []
+      dependencies: []
+      games: []
+      serverOnly: false
+      persistentPaths: []
+      mutableMode: immutable
+      status: missing

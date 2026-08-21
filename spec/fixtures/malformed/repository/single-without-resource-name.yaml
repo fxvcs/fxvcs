@@ -1,0 +1,14 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Repository
+metadata:
+  repositoryID: repo_inventory_01
+  storageDomainID: domain_inventory_01
+  name: inventory
+spec:
+  profile: fivem
+  minimumFXVCSVersion: 0.1.0
+  gitIntegrationVersion: 1
+  sourceRoot: .
+  layout: single
+  storage:
+    remotes: []

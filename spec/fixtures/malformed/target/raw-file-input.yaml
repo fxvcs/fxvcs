@@ -1,0 +1,27 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Target
+metadata:
+  name: dev
+spec:
+  release: v1.4.0
+  environment: dev
+  agentID: agent-host-a
+  authority: gitops
+  runtimeRef: fxserver-dev
+  retention:
+    keep: 5
+  secrets:
+    defaultProvider: local-file
+  hooks:
+    postMaterialize:
+      - id: render-server-values
+        type: template.v1
+        template:
+          repository: core
+          path: deploy/config/server-values.cfg.tmpl
+          digest: sha256:ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb
+        destination: runtime/config/server-values.cfg
+        mode: "0600"
+        inputs:
+          banner:
+            file: ../../etc/passwd

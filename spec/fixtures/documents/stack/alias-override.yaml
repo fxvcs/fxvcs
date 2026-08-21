@@ -1,0 +1,30 @@
+# Two components both named "tools" in their own metadata; coordination aliases
+# one of them and records a reviewed descriptor override for the other.
+apiVersion: fxvcs.dev/v1alpha1
+kind: Stack
+metadata:
+  stackID: stack_server_deployments
+  name: server-deployments
+spec:
+  profile: fivem
+  minimumFXVCSVersion: 0.1.0
+  components:
+    - repositoryID: repo_tools_01
+      remote: https://git.example.com/fivem/tools.git
+      ref: main
+      required: true
+      mount: resources/[tools]
+    - repositoryID: repo_tools_02
+      remote: https://git.example.com/community/tools.git
+      ref: v2
+      required: false
+      mount: resources/[community-tools]
+      alias: community-tools
+    - repositoryID: repo_inventory_01
+      remote: ssh://git@git.example.com/fivem/inventory.git
+      required: true
+      mount: resources/[inventory]/inventory
+      descriptorOverride:
+        sourceRoot: src
+        layout: single
+        resourceName: inventory

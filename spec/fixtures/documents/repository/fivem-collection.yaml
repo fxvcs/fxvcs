@@ -1,0 +1,22 @@
+# docs/spec/resource-activation.md §2, verbatim.
+apiVersion: fxvcs.dev/v1alpha1
+kind: Repository
+metadata:
+  repositoryID: repo_maps_01
+  storageDomainID: domain_maps_01
+  name: maps
+spec:
+  profile: fivem
+  minimumFXVCSVersion: 0.1.0
+  gitIntegrationVersion: 1
+  sourceRoot: .
+  layout: collection # single | collection
+  resourceName: null # required only for single
+  storage:
+    remotes:
+      - name: primary
+        type: s3
+        endpoint: https://objects.example.com
+        bucket: fxvcs-assets
+        prefix: repositories/domain_maps_01/
+        requiredForPublication: true

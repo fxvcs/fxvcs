@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/common.schema.json",
+  "title": "FXVCS shared definitions (fxvcs.dev/v1alpha1)",
+  "description": "Reusable value types referenced by every committed-document schema. Not a document schema by itself.",
+  "$defs": {
+    "apiVersion": {
+      "type": "string",
+      "const": "fxvcs.dev/v1alpha1"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "SHA-256 content digest, lowercase hex."
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$",
+      "description": "Git commit id: 40-hex SHA-1 or 64-hex SHA-256."
+    },
+    "repositoryID": {
+      "type": "string",
+      "pattern": "^repo_[0-9A-Za-z][0-9A-Za-z_-]{0,62}$"
+    },
+    "storageDomainID": {
+      "type": "string",
+      "pattern": "^domain_[0-9A-Za-z][0-9A-Za-z_-]{0,62}$"
+    },
+    "stackID": {
+      "type": "string",
+      "pattern": "^stack_[0-9A-Za-z][0-9A-Za-z_-]{0,62}$"
+    },
+    "resourceID": {
+      "type": "string",
+      "pattern": "^(runtime|external):[a-z0-9-]+/[a-z0-9._-]+$",
+      "description": "Namespaced non-component resource identity: runtime:<provider>/<path> or external:<owner>/<name>."
+    },
+    "resourceName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "description": "FiveM resource display/runtime name."
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "releaseName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "kebab": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Lowercase kebab-case identifier."
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+      "description": "Template-safe input name."
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^v?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z.-]+)?$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?:[^/\\\\]+)(?:/[^/\\\\]+)*$",
+      "description": "Repository-relative path with '/' separators; segments '.' and '..' are rejected by semantic validation (pathsafe.Normalize)."
+    },
+    "sourceRoot": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(\\.|(?:[^/\\\\]+)(?:/[^/\\\\]+)*)$",
+      "description": "'.' or a normalized repository-relative path."
+    },
+    "mountPath": {
+      "type": "string",
+      "pattern": "^resources/(?:[^/\\\\]+)(?:/[^/\\\\]+)*$",
+      "description": "Realization-relative mount under resources/, e.g. resources/[maps]."
+    },
+    "duration": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)(ms|s|m|h)$"
+    },
+    "rfc3339utc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$"
+    },
+    "activation": {
+      "type": "string",
+      "enum": [
+        "enabled",
+        "disabled",
+        "pending"
+      ],
+      "description": "Explicit tri-state. YAML null and a missing key are forbidden."
+    },
+    "resolvedActivation": {
+      "type": "string",
+      "enum": [
+        "enabled",
+        "disabled"
+      ],
+      "description": "Activation inside an immutable Release; pending can never enter a Release."
+    },
+    "activationSource": {
+      "type": "string",
+      "enum": [
+        "component",
+        "runtime-catalog",
+        "coordination-override",
+        "release-override"
+      ]
+    },
+    "resourceSource": {
+      "type": "string",
+      "enum": [
+        "component",
+        "runtime",
+        "external"
+      ]
+    },
+    "nonComponentSource": {
+      "type": "string",
+      "enum": [
+        "runtime",
+        "external"
+      ]
+    },
+    "layout": {
+      "type": "string",
+      "enum": [
+        "single",
+        "collection"
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "enum": [
+        "generic",
+        "fivem"
+      ]
+    },
+    "nameList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/resourceName"
+      },
+      "uniqueItems": true
+    },
+    "componentDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceRoot",
+        "layout"
+      ],
+      "properties": {
+        "sourceRoot": {
+          "$ref": "#/$defs/sourceRoot"
+        },
+        "layout": {
+          "$ref": "#/$defs/layout"
+        },
+        "resourceName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        }
+      },
+      "if": {
+        "properties": {
+          "layout": {
+            "const": "single"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "resourceName"
+        ],
+        "properties": {
+          "resourceName": {
+            "type": "string"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "resourceName": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    "verifierContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "version"
+      ],
+      "properties": {
+        "contract": {
+          "$ref": "#/$defs/kebab"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "lifecycleContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ownership",
+        "actions"
+      ],
+      "properties": {
+        "ownership": {
+          "type": "string",
+          "enum": [
+            "external"
+          ]
+        },
+        "actions": {
+          "type": "string",
+          "enum": [
+            "observe-only"
+          ]
+        }
+      }
+    },
+    "supervisor": {
+      "type": "string",
+      "enum": [
+        "txadmin",
+        "systemd",
+        "manual"
+      ],
+      "description": "Target-local runtime supervisor (agent-local binding; docs/spec/runtime-layout.md)."
+    },
+    "secretProviderType": {
+      "type": "string",
+      "enum": [
+        "env",
+        "envfile",
+        "fxvcs-cloud"
+      ],
+      "description": "Secret provider implementation type (agent-local or cloud alias definition)."
+    }
+  }
+}

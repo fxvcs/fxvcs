@@ -1,0 +1,88 @@
+name: Performance floor
+
+# Measures what one Status call costs on each platform, and what each asset
+# adds. Manual only: the numbers are for a decision, not a gate, and the
+# fixture is too slow to run on every push.
+#
+# The floor is dominated by Git process spawns, which cost roughly 2-5 ms on
+# Linux, ~10 ms on macOS and 30-50 ms on Windows — so a threshold tuned on one
+# platform can be wrong by several times on another. That is the number this
+# workflow exists to produce.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GOTOOLCHAIN: local
+  GOFLAGS: -mod=readonly
+  MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
+
+jobs:
+  measure:
+    name: measure (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Disable autocrlf before checkout (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install pinned tools (Go) from mise.toml
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - name: Go cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+            ~/Library/Caches/go-build
+            ~\AppData\Local\go-build
+          key: go-${{ runner.os }}-${{ hashFiles('go.sum', 'mise.toml') }}
+          restore-keys: go-${{ runner.os }}-
+
+      - name: Git identity for tests
+        run: |
+          git config --global user.name "fxvcs-ci"
+          git config --global user.email "ci@fxvcs.invalid"
+          git config --global init.defaultBranch main
+          git --version
+          go version
+
+      - name: measure
+        env:
+          FXVCS_PERF: "1"
+        run: go test ./internal/app -run TestPerformanceFloor -v -timeout 30m 2>&1 | tee perf-${{ matrix.os }}.txt
+
+      - name: summary
+        run: |
+          {
+            echo "## ${{ matrix.os }}"
+            echo
+            echo '```'
+            sed -n '/=== summary/,/^.*====$/p' perf-${{ matrix.os }}.txt | sed -E 's/^ *perf_test\.go:[0-9]+: //'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: perf-${{ matrix.os }}
+          path: perf-${{ matrix.os }}.txt

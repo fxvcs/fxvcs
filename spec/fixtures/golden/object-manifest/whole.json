@@ -1,0 +1,15 @@
+{
+  "formatVersion": 1,
+  "storageDomainID": "domain_maps_01",
+  "encoding": "whole/1",
+  "compression": "none",
+  "oid": "sha256:3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d",
+  "size": 1048576,
+  "chunks": [
+    {
+      "digest": "sha256:3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d",
+      "rawSize": 1048576,
+      "encodedSize": 1048576
+    }
+  ]
+}

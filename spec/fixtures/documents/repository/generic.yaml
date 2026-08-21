@@ -1,0 +1,19 @@
+# docs/build-plan.md §7 "Repository configuration", generic profile.
+apiVersion: fxvcs.dev/v1alpha1
+kind: Repository
+metadata:
+  repositoryID: repo_01K2FX
+  storageDomainID: domain_01K2FY
+  name: assets
+spec:
+  profile: generic
+  minimumFXVCSVersion: 0.1.0
+  gitIntegrationVersion: 1
+  storage:
+    remotes:
+      - name: primary
+        type: s3
+        endpoint: https://objects.example.com
+        bucket: fxvcs-assets
+        prefix: repositories/domain_01K2FY/
+        requiredForPublication: true

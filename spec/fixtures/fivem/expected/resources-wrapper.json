@@ -1,0 +1,83 @@
+{
+  "detection": {
+    "descriptor": {
+      "sourceRoot": "resources",
+      "layout": "collection"
+    },
+    "resourceNameProposed": false,
+    "resources": [
+      "[core]/framework",
+      "[core]/spawn"
+    ]
+  },
+  "resources": [
+    {
+      "path": "[core]/framework",
+      "name": "framework",
+      "manifestFile": "fxmanifest.lua",
+      "dir": "resources/[core]/framework",
+      "manifest": {
+        "fxVersion": "cerulean",
+        "games": [
+          "gta5"
+        ],
+        "name": "framework",
+        "provides": [
+          "es_extended"
+        ],
+        "dependencies": [],
+        "runtimeRequirements": [],
+        "serverOnly": false,
+        "lua54": false,
+        "clientScripts": [],
+        "serverScripts": [],
+        "sharedScripts": [
+          "shared.lua"
+        ],
+        "files": [],
+        "exports": [],
+        "serverExports": [],
+        "dataFiles": [],
+        "isMap": false,
+        "legacyFormat": false,
+        "directives": 4,
+        "ignored": [],
+        "metadata": {}
+      }
+    },
+    {
+      "path": "[core]/spawn",
+      "name": "spawn",
+      "manifestFile": "fxmanifest.lua",
+      "dir": "resources/[core]/spawn",
+      "manifest": {
+        "fxVersion": "cerulean",
+        "games": [
+          "gta5"
+        ],
+        "name": "spawn",
+        "provides": [],
+        "dependencies": [
+          "es_extended"
+        ],
+        "runtimeRequirements": [],
+        "serverOnly": false,
+        "lua54": false,
+        "clientScripts": [
+          "spawn.lua"
+        ],
+        "serverScripts": [],
+        "sharedScripts": [],
+        "files": [],
+        "exports": [],
+        "serverExports": [],
+        "dataFiles": [],
+        "isMap": false,
+        "legacyFormat": false,
+        "directives": 4,
+        "ignored": [],
+        "metadata": {}
+      }
+    }
+  ]
+}

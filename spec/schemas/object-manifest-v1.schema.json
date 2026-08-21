@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/object-manifest-v1.schema.json",
+  "title": "FXVCS object manifest, format version 1 (canonical JSON)",
+  "description": "Describes how one object's bytes are stored: ordered chunk digests with raw and encoded sizes, encoding and compression identifiers, and the whole-file digest. Its canonical-JSON digest is the pointer's manifest field. Sum of chunk rawSize must equal size.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["formatVersion", "storageDomainID", "encoding", "compression", "oid", "size", "chunks"],
+  "properties": {
+    "formatVersion": { "type": "integer", "const": 1 },
+    "storageDomainID": { "type": "string", "pattern": "^domain_[0-9A-Za-z][0-9A-Za-z_-]{0,62}$" },
+    "encoding": { "type": "string", "enum": ["whole/1", "cdc-fastcdc/1"] },
+    "compression": { "type": "string", "enum": ["none", "zstd/1"] },
+    "oid": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "SHA-256 of the whole uncompressed file." },
+    "size": { "type": "integer", "minimum": 0, "description": "Uncompressed size in bytes." },
+    "chunks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/chunk" }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "encoding": { "const": "whole/1" } } },
+      "then": { "properties": { "chunks": { "maxItems": 1 } } }
+    }
+  ],
+  "$defs": {
+    "chunk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest", "rawSize", "encodedSize"],
+      "properties": {
+        "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "SHA-256 of the raw (uncompressed) chunk bytes." },
+        "rawSize": { "type": "integer", "minimum": 0 },
+        "encodedSize": { "type": "integer", "minimum": 0, "description": "Bytes as stored after compression." }
+      }
+    }
+  }
+}

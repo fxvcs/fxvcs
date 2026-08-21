@@ -1,0 +1,42 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: ResourceCatalog
+metadata:
+  repositoryID: repo_maps_01
+spec:
+  resources:
+    - path: a
+      name: a
+      activation: enabled
+      after: [c]
+      before: []
+      provides: []
+      dependencies: []
+      games: []
+      serverOnly: false
+      persistentPaths: []
+      mutableMode: immutable
+      status: present
+    - path: b
+      name: b
+      activation: enabled
+      after: [a]
+      before: [c]
+      provides: []
+      dependencies: []
+      games: []
+      serverOnly: false
+      persistentPaths: []
+      mutableMode: immutable
+      status: present
+    - path: c
+      name: c
+      activation: enabled
+      after: []
+      before: [a]
+      provides: []
+      dependencies: []
+      games: []
+      serverOnly: false
+      persistentPaths: []
+      mutableMode: immutable
+      status: present

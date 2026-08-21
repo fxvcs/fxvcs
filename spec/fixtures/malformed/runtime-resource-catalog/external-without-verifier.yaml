@@ -1,0 +1,8 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: RuntimeResourceCatalog
+spec:
+  resources:
+    - id: external:host/custom-anticheat
+      name: custom-anticheat
+      source: external
+      activation: enabled

@@ -1,0 +1,9 @@
+{
+  "formatVersion": 1,
+  "storageDomainID": "domain_maps_01",
+  "entries": [
+    { "path": "city-map/stream/city.ybn", "mode": "100644", "pointerDigest": "sha256:cd0aa9856147b6c5b4ff2b7dfee5da20aa38253099ef1b4a64aced233c9afe29" },
+    { "path": "city-map/stream/city.ymap", "mode": "100644", "pointerDigest": "sha256:aaa9402664f1a41f40ebbc52c9993eb66aeb366602958fdfaa283b71e64db123" },
+    { "path": "tools/build.sh", "mode": "100755", "pointerDigest": "sha256:ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb" }
+  ]
+}

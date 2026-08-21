@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/agent-config.schema.json",
+  "title": "AgentConfig (agent-local configuration)",
+  "description": "Host-local bindings that let one FXVCS agent reconcile portable Targets onto physical runtime roots. This document is versioned but is never committed to the coordination repository.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "spec"],
+  "properties": {
+    "apiVersion": { "$ref": "common.schema.json#/$defs/apiVersion" },
+    "kind": { "const": "AgentConfig" },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agentID", "git", "targets", "safetyFloors"],
+      "properties": {
+        "agentID": { "$ref": "common.schema.json#/$defs/kebab" },
+        "git": { "$ref": "#/$defs/gitConfig" },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/targetBinding" }
+        },
+        "safetyFloors": { "$ref": "#/$defs/safetyFloors" }
+      }
+    }
+  },
+  "$defs": {
+    "absolutePath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Absolute, clean host path. OS-specific absolute-path and overlap checks are semantic."
+    },
+    "gitConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "remoteRewrite": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/remoteRewrite" }
+        },
+        "blobless": { "type": "boolean" },
+        "shallow": { "type": "boolean" }
+      }
+    },
+    "remoteRewrite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 }
+      }
+    },
+    "targetBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "deployRoot", "serverData", "runtime", "trust"],
+      "properties": {
+        "target": { "$ref": "common.schema.json#/$defs/kebab" },
+        "deployRoot": { "$ref": "#/$defs/absolutePath" },
+        "serverData": { "$ref": "#/$defs/absolutePath" },
+        "runtime": { "$ref": "#/$defs/runtimeBinding" },
+        "verifiers": {
+          "type": "object",
+          "propertyNames": { "$ref": "common.schema.json#/$defs/kebab" },
+          "additionalProperties": { "$ref": "target.schema.json#/$defs/verifierBinding" }
+        },
+        "secrets": {
+          "type": "object",
+          "propertyNames": { "$ref": "common.schema.json#/$defs/kebab" },
+          "additionalProperties": { "$ref": "#/$defs/secretProvider" }
+        },
+        "trust": { "$ref": "target.schema.json#/$defs/trustPolicy" },
+        "hooks": {
+          "type": "object",
+          "propertyNames": { "$ref": "common.schema.json#/$defs/kebab" },
+          "additionalProperties": { "$ref": "#/$defs/hookDefinition" }
+        }
+      }
+    },
+    "runtimeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supervisor"],
+      "properties": {
+        "supervisor": { "$ref": "common.schema.json#/$defs/supervisor" },
+        "systemdUnit": { "type": "string", "minLength": 1 },
+        "rcon": { "$ref": "#/$defs/rconEndpoint" },
+        "resourceState": { "$ref": "#/$defs/resourceStateEndpoint" },
+        "txData": { "$ref": "#/$defs/absolutePath" },
+        "systemResourcesRoot": { "$ref": "#/$defs/absolutePath" }
+      }
+    },
+    "rconEndpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["host", "port", "passwordSecret"],
+      "properties": {
+        "host": { "type": "string", "minLength": 1 },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "passwordSecret": { "$ref": "#/$defs/secretRef" }
+      }
+    },
+    "resourceStateEndpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["host", "port", "tokenSecret"],
+      "properties": {
+        "host": { "enum": ["127.0.0.1", "::1"] },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "tokenSecret": { "$ref": "#/$defs/secretRef" }
+      }
+    },
+    "secretRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "key"],
+      "properties": {
+        "namespace": { "$ref": "common.schema.json#/$defs/kebab" },
+        "key": { "$ref": "common.schema.json#/$defs/kebab" }
+      }
+    },
+    "secretProvider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "$ref": "common.schema.json#/$defs/secretProviderType" },
+        "path": { "$ref": "#/$defs/absolutePath" },
+        "aliases": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*/[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "additionalProperties": { "$ref": "common.schema.json#/$defs/identifier" }
+        }
+      }
+    },
+    "hookDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "allowedDestinationRoot", "timeoutSeconds", "maxOutputBytes"],
+      "properties": {
+        "type": { "const": "template.v1" },
+        "allowedDestinationRoot": { "$ref": "common.schema.json#/$defs/relativePath" },
+        "timeoutSeconds": { "type": "integer", "minimum": 1 },
+        "maxOutputBytes": { "type": "integer", "minimum": 1 },
+        "runAs": { "type": "string", "minLength": 1 },
+        "allowedTemplates": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 3, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*:.+$" }
+        }
+      }
+    },
+    "safetyFloors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimumRetention", "maxDeletionsPerHour", "maxAutomaticRollbacks", "disableAutomaticRollback"],
+      "properties": {
+        "minimumRetention": { "type": "integer", "minimum": 1 },
+        "maxDeletionsPerHour": { "type": "integer", "minimum": 0 },
+        "maxAutomaticRollbacks": { "type": "integer", "minimum": 0 },
+        "disableAutomaticRollback": { "type": "boolean" }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: RuntimeResourceCatalog
+spec:
+  resources:
+    - id: runtime:system/monitor
+      name: monitor
+      source: runtime
+      activation: enabled
+    - id: runtime:system/webadmin
+      name: webadmin
+      source: runtime
+      activation: disabled
+      after: [monitor]
+    - id: external:cfx-server-data/chat
+      name: chat
+      source: external
+      activation: pending
+      before: [webadmin]
+      verifier:
+        contract: resource-present
+        version: 1
+      lifecycle:
+        ownership: external
+        actions: observe-only

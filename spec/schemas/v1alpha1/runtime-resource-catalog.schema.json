@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/runtime-resource-catalog.schema.json",
+  "title": "RuntimeResourceCatalog (coordination runtime-resources.yaml)",
+  "description": "Coordination-owned catalog of namespaced runtime: and external: resources that no component repository supplies. External entries carry the portable verifier contract and lifecycle requirements.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "spec"],
+  "properties": {
+    "apiVersion": { "$ref": "common.schema.json#/$defs/apiVersion" },
+    "kind": { "const": "RuntimeResourceCatalog" },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resources"],
+      "properties": {
+        "resources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/runtimeResource" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "runtimeResource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "source", "activation"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/resourceID" },
+        "name": { "$ref": "common.schema.json#/$defs/resourceName" },
+        "source": { "$ref": "common.schema.json#/$defs/nonComponentSource" },
+        "activation": { "$ref": "common.schema.json#/$defs/activation" },
+        "after": { "$ref": "common.schema.json#/$defs/nameList" },
+        "before": { "$ref": "common.schema.json#/$defs/nameList" },
+        "verifier": { "$ref": "common.schema.json#/$defs/verifierContract" },
+        "lifecycle": { "$ref": "common.schema.json#/$defs/lifecycleContract" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "source": { "const": "runtime" } } },
+          "then": {
+            "properties": { "id": { "pattern": "^runtime:" }, "verifier": false, "lifecycle": false }
+          }
+        },
+        {
+          "if": { "properties": { "source": { "const": "external" } } },
+          "then": {
+            "required": ["verifier", "lifecycle"],
+            "properties": { "id": { "pattern": "^external:" } }
+          }
+        }
+      ]
+    },
+    "releaseRuntimeResource": {
+      "description": "A runtime/external resource snapshotted into a Release: same shape, but activation must be resolved.",
+      "allOf": [
+        { "$ref": "#/$defs/runtimeResource" },
+        { "properties": { "activation": { "$ref": "common.schema.json#/$defs/resolvedActivation" } } }
+      ]
+    }
+  }
+}

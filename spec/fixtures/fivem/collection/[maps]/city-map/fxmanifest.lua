@@ -1,0 +1,5 @@
+fx_version 'cerulean'
+game 'gta5'
+this_is_a_map 'yes'
+dependency 'mapmanager'
+data_file 'DLC_ITYP_REQUEST' 'stream/city_props.ytyp'

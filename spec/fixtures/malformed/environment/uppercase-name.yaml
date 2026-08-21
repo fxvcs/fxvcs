@@ -1,0 +1,8 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Environment
+metadata:
+  name: PRD
+spec:
+  revision: 1
+  inputs: {}
+  secretScope: prd

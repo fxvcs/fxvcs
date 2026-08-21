@@ -1,0 +1,18 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Stack
+metadata:
+  stackID: stack_server_deployments
+  name: server-deployments
+spec:
+  profile: fivem
+  minimumFXVCSVersion: 0.1.0
+  components:
+    - repositoryID: repo_core_01
+      remote: https://git.example.com/fivem/core.git
+      ref: main
+      required: true
+      mount: resources/[core]
+    - repositoryID: repo_maps_01
+      remote: git@git.example.com:fivem/maps.git
+      required: false
+      mount: resources/[maps]

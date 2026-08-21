@@ -1,0 +1,10 @@
+fxvcs pointer diff: assets/a.bin
+            old                                                                      new
+  kind      pointer                                                                  file (not a pointer)
+  domain    domain_test_01                                                           -
+  encoding  whole/1                                                                  -
+  manifest  sha256:d813b576952d753c9d2829a080367023db55860dc7bf32723544e03b32107ece  -
+  oid       sha256:8061ee14ce8f0942bd0740080ac8a6bba585307e1217802ad31cbf2418ff8fcf  sha256:8061ee14ce8f0942bd0740080ac8a6bba585307e1217802ad31cbf2418ff8fcf
+  size      22                                                                       22
+  mode      100644                                                                   100644
+summary: content unchanged sha256:8061ee14ce8f0942bd0740080ac8a6bba585307e1217802ad31cbf2418ff8fcf (22 bytes)

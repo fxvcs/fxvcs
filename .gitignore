@@ -1,0 +1,11 @@
+/bin/
+/dist/
+.audit-artifacts/
+.claude/
+.codex/
+temp-docs/
+*.test
+*.out
+coverage.*
+.DS_Store
+/.claude/worktrees/

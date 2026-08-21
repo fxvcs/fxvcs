@@ -1,0 +1,19 @@
+# docs/spec/resource-activation.md §2, verbatim.
+apiVersion: fxvcs.dev/v1alpha1
+kind: ResourceCatalog
+metadata:
+  repositoryID: repo_maps_01
+spec:
+  resources:
+    - path: city-map
+      name: city-map
+      activation: enabled # enabled | disabled | pending
+      after: [mapmanager]
+      before: []
+      provides: []
+      dependencies: [mapmanager]
+      games: [gta5]
+      serverOnly: false
+      persistentPaths: []
+      mutableMode: immutable # immutable | copy
+      status: present # present | missing

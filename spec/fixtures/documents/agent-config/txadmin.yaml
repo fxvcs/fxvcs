@@ -1,0 +1,62 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: AgentConfig
+spec:
+  agentID: agent-host-b
+  git:
+    remoteRewrite:
+      - from: https://git.example.com/
+        to: ssh://git@git.example.com/
+    shallow: false
+  targets:
+    - target: prd
+      deployRoot: /opt/fxvcs/prd
+      serverData: /opt/fxserver/prd
+      runtime:
+        supervisor: txadmin
+        txData: /opt/txdata/prd
+        rcon:
+          host: 127.0.0.1
+          port: 30120
+          passwordSecret:
+            namespace: fivem
+            key: rcon-password
+        resourceState:
+          host: 127.0.0.1
+          port: 30120
+          tokenSecret:
+            namespace: fivem
+            key: health-token
+      verifiers:
+        resource-present:
+          implementation: fxserver-resource-list
+          implementationVersion: 1
+          endpointRef: rcon-main
+      secrets:
+        process-env:
+          type: env
+          aliases:
+            fivem/rcon-password: FXVCS_RCON_PASSWORD
+            fivem/health-token: FXVCS_HEALTH_TOKEN
+        local-file:
+          type: envfile
+          path: /etc/fxvcs/prd.env
+      trust:
+        coordination:
+          authority: signed-promotion-tag
+          signatures: required
+          allowedSignersFile: trust/allowed_signers
+          promotionTagPrefix: refs/tags/fxvcs/promote/prd/
+      hooks:
+        render-server-values:
+          type: template.v1
+          allowedDestinationRoot: runtime/config
+          timeoutSeconds: 10
+          maxOutputBytes: 65536
+          runAs: fxserver
+          allowedTemplates:
+            - core:deploy/config/server-values.cfg.tmpl
+  safetyFloors:
+    minimumRetention: 5
+    maxDeletionsPerHour: 1
+    maxAutomaticRollbacks: 1
+    disableAutomaticRollback: false

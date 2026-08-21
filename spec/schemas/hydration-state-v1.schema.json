@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/hydration-state-v1.schema.json",
+  "title": "FXVCS hydration state row, schema version 1 ($GIT_DIR/fxvcs/state.db)",
+  "description": "Logical row of the per-worktree hydration table. Records per-path hydration intent, the pointer digest recorded in the Git index, the digest of the materialized working file, file identity/stat metadata used as a cache key, and last verification. Cache metadata is an optimization, never an integrity source: a changed size, mtime, or fileID invalidates workingDigest.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["path", "intent", "indexPointerDigest", "workingDigest", "size", "mtime", "fileID", "lastVerified", "generation"],
+  "properties": {
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?:[^/\\\\]+)(?:/[^/\\\\]+)*$", "description": "Normalized repository-relative path (primary key)." },
+    "intent": { "type": "string", "enum": ["unhydrated", "hydrated"], "description": "Operator intent for this path in this worktree." },
+    "indexPointerDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "SHA-256 of the exact pointer bytes in the Git index." },
+    "workingDigest": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$", "description": "SHA-256 of the working-tree file bytes when last verified; null when unknown or the file is a pointer." },
+    "size": { "type": ["integer", "null"], "minimum": 0, "description": "Working file size in bytes at last observation." },
+    "mtime": { "type": ["integer", "null"], "description": "Working file modification time, Unix nanoseconds, at last observation." },
+    "fileID": { "type": ["string", "null"], "minLength": 1, "description": "Opaque platform file identity (device:inode on POSIX, volume:fileindex on Windows)." },
+    "lastVerified": { "type": ["string", "null"], "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$", "description": "RFC 3339 UTC time the working bytes were last hashed and matched." },
+    "generation": { "type": "integer", "minimum": 0, "description": "Operation generation that last wrote this row (crash-recovery journal cross-reference)." }
+  }
+}

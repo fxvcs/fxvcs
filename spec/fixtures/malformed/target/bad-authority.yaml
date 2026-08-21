@@ -1,0 +1,14 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Target
+metadata:
+  name: dev
+spec:
+  release: v1.4.0
+  environment: dev
+  agentID: agent-host-a
+  authority: manual
+  runtimeRef: fxserver-dev
+  retention:
+    keep: 5
+  secrets:
+    defaultProvider: local-file

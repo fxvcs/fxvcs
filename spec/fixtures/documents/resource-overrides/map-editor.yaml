@@ -1,0 +1,10 @@
+# docs/spec/resource-activation.md §5, verbatim.
+apiVersion: fxvcs.dev/v1alpha1
+kind: ResourceOverrides
+spec:
+  resources:
+    - repositoryID: repo_tools_01
+      path: map-editor
+      activation: disabled
+      after: []
+      before: [admin-tools]

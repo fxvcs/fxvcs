@@ -1,0 +1,16 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Stack
+metadata:
+  stackID: stack_server_deployments
+  name: server-deployments
+spec:
+  profile: fivem
+  minimumFXVCSVersion: 0.1.0
+  components:
+    - repositoryID: repo_inventory_01
+      remote: https://git.example.com/fivem/inventory.git
+      required: true
+      mount: resources/[inventory]/inventory
+      descriptorOverride:
+        sourceRoot: .
+        layout: single

@@ -1,0 +1,16 @@
+# docs/product-scope.md §8 "Environments and targets", extended with the
+# required authority/runtimeRef/retention fields.
+apiVersion: fxvcs.dev/v1alpha1
+kind: Target
+metadata:
+  name: prd
+spec:
+  release: v1.4.0-prd
+  environment: prd
+  agentID: agent-host-b
+  authority: gitops
+  runtimeRef: fxserver-main
+  retention:
+    keep: 3
+  secrets:
+    defaultProvider: fxvcs-cloud

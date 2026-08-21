@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/environment.schema.json",
+  "title": "Environment (environments/<name>.yaml)",
+  "description": "Versioned non-secret operating context: reusable inputs and the logical secret scope. Secret values and provider selection never appear here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": { "$ref": "common.schema.json#/$defs/apiVersion" },
+    "kind": { "const": "Environment" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "$ref": "common.schema.json#/$defs/kebab" }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "inputs", "secretScope"],
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "inputs": {
+          "type": "object",
+          "propertyNames": { "$ref": "common.schema.json#/$defs/identifier" },
+          "additionalProperties": { "type": "string" }
+        },
+        "secretScope": { "$ref": "common.schema.json#/$defs/kebab" }
+      }
+    }
+  }
+}

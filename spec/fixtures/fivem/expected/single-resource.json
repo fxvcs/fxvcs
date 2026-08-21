@@ -1,0 +1,67 @@
+{
+  "detection": {
+    "descriptor": {
+      "sourceRoot": ".",
+      "layout": "single",
+      "resourceName": "single-resource"
+    },
+    "resourceNameProposed": true,
+    "resources": [
+      "single-resource"
+    ]
+  },
+  "resources": [
+    {
+      "path": "single-resource",
+      "name": "single-resource",
+      "manifestFile": "fxmanifest.lua",
+      "dir": ".",
+      "manifest": {
+        "fxVersion": "cerulean",
+        "games": [
+          "gta5"
+        ],
+        "name": "inventory",
+        "description": "Item and inventory management",
+        "version": "2.4.0",
+        "provides": [],
+        "dependencies": [
+          "es_extended",
+          "oxmysql"
+        ],
+        "runtimeRequirements": [],
+        "serverOnly": false,
+        "lua54": true,
+        "clientScripts": [
+          "client/main.lua",
+          "client/ui.lua"
+        ],
+        "serverScripts": [
+          "@oxmysql/lib/MySQL.lua",
+          "server/main.lua"
+        ],
+        "sharedScripts": [
+          "config.lua"
+        ],
+        "files": [
+          "html/index.html",
+          "html/app.js"
+        ],
+        "uiPage": "html/index.html",
+        "exports": [
+          "GetItem",
+          "AddItem"
+        ],
+        "serverExports": [
+          "RemoveItem"
+        ],
+        "dataFiles": [],
+        "isMap": false,
+        "legacyFormat": false,
+        "directives": 14,
+        "ignored": [],
+        "metadata": {}
+      }
+    }
+  ]
+}

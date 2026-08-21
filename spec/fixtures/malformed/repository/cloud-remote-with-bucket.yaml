@@ -1,0 +1,16 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: Repository
+metadata:
+  repositoryID: repo_cloud_02
+  storageDomainID: domain_cloud_02
+  name: cloud-bad
+spec:
+  profile: generic
+  minimumFXVCSVersion: 0.1.0
+  gitIntegrationVersion: 1
+  storage:
+    remotes:
+      - name: cloud
+        type: fxvcs-cloud
+        bucket: leaked-provider-detail
+        requiredForPublication: true

@@ -1,0 +1,5 @@
+fx_version 'cerulean'
+game 'common'
+provide 'mapmanager'
+client_script 'mapmanager_client.lua'
+server_script 'mapmanager_server.lua'

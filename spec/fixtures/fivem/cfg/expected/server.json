@@ -1,0 +1,27 @@
+{
+  "resources": [
+    "anticheat",
+    "bad",
+    "bank",
+    "baseevents",
+    "chat",
+    "city-map",
+    "hardcap",
+    "mapmanager",
+    "multi-game",
+    "sessionmanager",
+    "spawnmanager"
+  ],
+  "files": [
+    "server.cfg",
+    "resources.cfg",
+    "sub/dir/more.cfg",
+    "sub/dir/extra.cfg"
+  ],
+  "warnings": [
+    "server.cfg:12: ignored ensure \"name!\": resource name \"name!\" must match ^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+    "server.cfg:13: ignored stop chat (cfg import never infers disabled)",
+    "server.cfg:16: skipped resource-relative exec \"@vendor/config.cfg\" (cannot be resolved without a running server)",
+    "sub/dir/extra.cfg:2: ignored exec without a file"
+  ]
+}

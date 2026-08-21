@@ -1,0 +1,11 @@
+{
+  "zeta": 1,
+  "alpha": {"b": [3, 2, 1], "a": null, "c": true},
+  "Beta": "x",
+  "beta": "y",
+  "esc": "quote\" backslash\\ tab\t nl\n ctl\u0001 del\u007f \u00e9 \ud834\udd1e slash\/ unicode-escaped-A \u0041",
+  "big": 9007199254740991,
+  "neg": -42,
+  "empty": {},
+  "list": []
+}

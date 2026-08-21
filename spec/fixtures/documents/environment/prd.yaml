@@ -1,0 +1,10 @@
+# docs/product-scope.md §8 "Environments and targets" (revision added: it is required).
+apiVersion: fxvcs.dev/v1alpha1
+kind: Environment
+metadata:
+  name: prd
+spec:
+  revision: 1
+  inputs:
+    hostname: Example Production
+  secretScope: prd

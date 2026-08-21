@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fxvcs.dev/schemas/v1alpha1/stack.schema.json",
+  "title": "Stack (coordination fxvcs.yaml)",
+  "description": "Coordination composition: registered component repositories, their remotes, required flag, mounts, display aliases, and reviewed descriptor overrides.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": { "$ref": "common.schema.json#/$defs/apiVersion" },
+    "kind": { "const": "Stack" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stackID", "name"],
+      "properties": {
+        "stackID": { "$ref": "common.schema.json#/$defs/stackID" },
+        "name": { "$ref": "common.schema.json#/$defs/displayName" }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "minimumFXVCSVersion", "components"],
+      "properties": {
+        "profile": { "$ref": "common.schema.json#/$defs/profile" },
+        "minimumFXVCSVersion": { "$ref": "common.schema.json#/$defs/semver" },
+        "components": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/stackComponent" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "stackComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositoryID", "remote", "required", "mount"],
+      "properties": {
+        "repositoryID": { "$ref": "common.schema.json#/$defs/repositoryID" },
+        "remote": { "$ref": "#/$defs/gitRemote" },
+        "ref": { "type": "string", "minLength": 1, "pattern": "^[^\\s]+$" },
+        "required": { "type": "boolean" },
+        "mount": { "$ref": "common.schema.json#/$defs/mountPath" },
+        "alias": { "$ref": "common.schema.json#/$defs/displayName" },
+        "descriptorOverride": { "$ref": "common.schema.json#/$defs/componentDescriptor" }
+      }
+    },
+    "gitRemote": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(https://|ssh://|git@|file://)[^\\s]+$",
+      "description": "Git remote URL (https, ssh, scp-like, or file:// for an on-host or air-gapped mirror). Credentials must not be embedded."
+    }
+  }
+}

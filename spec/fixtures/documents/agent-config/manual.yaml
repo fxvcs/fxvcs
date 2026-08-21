@@ -1,0 +1,21 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: AgentConfig
+spec:
+  agentID: agent-host-a
+  git:
+    blobless: true
+  targets:
+    - target: dev
+      deployRoot: /srv/fxvcs/dev
+      serverData: /srv/fxserver/dev
+      runtime:
+        supervisor: manual
+      trust:
+        coordination:
+          authority: signed-commit-tip
+          signatures: required
+  safetyFloors:
+    minimumRetention: 3
+    maxDeletionsPerHour: 2
+    maxAutomaticRollbacks: 1
+    disableAutomaticRollback: false

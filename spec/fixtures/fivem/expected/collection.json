@@ -1,0 +1,271 @@
+{
+  "detection": {
+    "descriptor": {
+      "sourceRoot": ".",
+      "layout": "collection"
+    },
+    "resourceNameProposed": false,
+    "resources": [
+      "[maps]/[interiors]/bank",
+      "[maps]/city-map",
+      "anticheat",
+      "chat",
+      "mapmanager-fork",
+      "multi-game",
+      "runtime-reqs"
+    ]
+  },
+  "resources": [
+    {
+      "path": "[maps]/[interiors]/bank",
+      "name": "bank",
+      "manifestFile": "fxmanifest.lua",
+      "dir": "[maps]/[interiors]/bank",
+      "manifest": {
+        "fxVersion": "cerulean",
+        "games": [
+          "gta5"
+        ],
+        "name": "bank",
+        "provides": [],
+        "dependencies": [
+          "city-map",
+          "mapmanager"
+        ],
+        "runtimeRequirements": [],
+        "serverOnly": false,
+        "lua54": false,
+        "clientScripts": [],
+        "serverScripts": [],
+        "sharedScripts": [],
+        "files": [],
+        "exports": [],
+        "serverExports": [],
+        "dataFiles": [],
+        "isMap": true,
+        "legacyFormat": false,
+        "directives": 4,
+        "ignored": [],
+        "metadata": {}
+      }
+    },
+    {
+      "path": "[maps]/city-map",
+      "name": "city-map",
+      "manifestFile": "fxmanifest.lua",
+      "dir": "[maps]/city-map",
+      "manifest": {
+        "fxVersion": "cerulean",
+        "games": [
+          "gta5"
+        ],
+        "name": "city-map",
+        "provides": [],
+        "dependencies": [
+          "mapmanager"
+        ],
+        "runtimeRequirements": [],
+        "serverOnly": false,
+        "lua54": false,
+        "clientScripts": [],
+        "serverScripts": [],
+        "sharedScripts": [],
+        "files": [],
+        "exports": [],
+        "serverExports": [],
+        "dataFiles": [
+          {
+            "type": "DLC_ITYP_REQUEST",
+            "path": "stream/city_props.ytyp"
+          }
+        ],
+        "isMap": true,
+        "legacyFormat": false,
+        "directives": 5,
+        "ignored": [],
+        "metadata": {}
+      }
+    },
+    {
+      "path": "anticheat",
+      "name": "anticheat",
+      "manifestFile": "fxmanifest.lua",
+      "dir": "anticheat",
+      "manifest": {
+        "fxVersion": "cerulean",
+        "games": [
+          "gta5"
+        ],
+        "name": "anticheat",
+        "provides": [],
+        "dependencies": [],
+        "runtimeRequirements": [],
+        "serverOnly": true,
+        "lua54": false,
+        "clientScripts": [],
+        "serverScripts": [
+          "server/main.lua"
+        ],
+        "sharedScripts": [],
+        "files": [],
+        "exports": [],
+        "serverExports": [],
+        "dataFiles": [],
+        "isMap": false,
+        "legacyFormat": false,
+        "directives": 4,
+        "ignored": [],
+        "metadata": {}
+      }
+    },
+    {
+      "path": "chat",
+      "name": "chat",
+      "manifestFile": "__resource.lua",
+      "dir": "chat",
+      "manifest": {
+        "resourceManifestVersion": "44febabe-d386-4d18-afbe-5e627f4af937",
+        "games": [],
+        "name": "chat",
+        "provides": [],
+        "dependencies": [],
+        "runtimeRequirements": [],
+        "serverOnly": false,
+        "lua54": false,
+        "clientScripts": [
+          "cl_chat.lua"
+        ],
+        "serverScripts": [
+          "sv_chat.lua"
+        ],
+        "sharedScripts": [],
+        "files": [
+          "html/index.html",
+          "html/index.css"
+        ],
+        "uiPage": "html/index.html",
+        "exports": [],
+        "serverExports": [],
+        "dataFiles": [],
+        "isMap": false,
+        "legacyFormat": true,
+        "directives": 5,
+        "ignored": [],
+        "metadata": {}
+      }
+    },
+    {
+      "path": "mapmanager-fork",
+      "name": "mapmanager-fork",
+      "manifestFile": "fxmanifest.lua",
+      "dir": "mapmanager-fork",
+      "manifest": {
+        "fxVersion": "cerulean",
+        "games": [
+          "common"
+        ],
+        "name": "mapmanager-fork",
+        "provides": [
+          "mapmanager"
+        ],
+        "dependencies": [],
+        "runtimeRequirements": [],
+        "serverOnly": false,
+        "lua54": false,
+        "clientScripts": [
+          "mapmanager_client.lua"
+        ],
+        "serverScripts": [
+          "mapmanager_server.lua"
+        ],
+        "sharedScripts": [],
+        "files": [],
+        "exports": [],
+        "serverExports": [],
+        "dataFiles": [],
+        "isMap": false,
+        "legacyFormat": false,
+        "directives": 5,
+        "ignored": [],
+        "metadata": {}
+      }
+    },
+    {
+      "path": "multi-game",
+      "name": "multi-game",
+      "manifestFile": "fxmanifest.lua",
+      "dir": "multi-game",
+      "manifest": {
+        "fxVersion": "cerulean",
+        "games": [
+          "gta5",
+          "rdr3"
+        ],
+        "name": "multi-game",
+        "provides": [],
+        "dependencies": [],
+        "runtimeRequirements": [],
+        "serverOnly": false,
+        "lua54": false,
+        "clientScripts": [],
+        "serverScripts": [],
+        "sharedScripts": [
+          "shared.lua"
+        ],
+        "files": [],
+        "exports": [],
+        "serverExports": [],
+        "dataFiles": [],
+        "isMap": false,
+        "legacyFormat": false,
+        "directives": 4,
+        "ignored": [
+          "url"
+        ],
+        "metadata": {}
+      }
+    },
+    {
+      "path": "runtime-reqs",
+      "name": "runtime-reqs",
+      "manifestFile": "fxmanifest.lua",
+      "dir": "runtime-reqs",
+      "manifest": {
+        "fxVersion": "cerulean",
+        "games": [
+          "gta5"
+        ],
+        "name": "runtime-reqs",
+        "description": "Declares FXServer capability requirements alongside a resource dependency",
+        "provides": [],
+        "dependencies": [
+          "mapmanager"
+        ],
+        "runtimeRequirements": [
+          "/assetpacks",
+          "/gameBuild:h4",
+          "/native:0xE27C97A0",
+          "/onesync",
+          "/policy:subdir_file_mapping",
+          "/server:4500"
+        ],
+        "serverOnly": false,
+        "lua54": false,
+        "clientScripts": [],
+        "serverScripts": [
+          "server.lua"
+        ],
+        "sharedScripts": [],
+        "files": [],
+        "exports": [],
+        "serverExports": [],
+        "dataFiles": [],
+        "isMap": false,
+        "legacyFormat": false,
+        "directives": 5,
+        "ignored": [],
+        "metadata": {}
+      }
+    }
+  ]
+}

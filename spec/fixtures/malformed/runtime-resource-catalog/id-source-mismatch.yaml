@@ -1,0 +1,8 @@
+apiVersion: fxvcs.dev/v1alpha1
+kind: RuntimeResourceCatalog
+spec:
+  resources:
+    - id: external:system/monitor
+      name: monitor
+      source: runtime
+      activation: enabled
