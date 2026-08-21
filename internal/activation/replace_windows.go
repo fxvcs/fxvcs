@@ -33,6 +33,18 @@ func replaceCurrent(from, to string) error {
 		return err
 	}
 	defer windows.CloseHandle(handle)
+	dirp, err := windows.UTF16PtrFromString(filepath.Dir(to))
+	if err != nil {
+		return err
+	}
+	dirHandle, err := windows.CreateFile(dirp,
+		windows.GENERIC_WRITE|windows.DELETE,
+		windows.FILE_SHARE_READ|windows.FILE_SHARE_WRITE|windows.FILE_SHARE_DELETE,
+		nil, windows.OPEN_EXISTING, windows.FILE_FLAG_BACKUP_SEMANTICS, 0)
+	if err != nil {
+		return err
+	}
+	defer windows.CloseHandle(dirHandle)
 
 	// MoveFileEx cannot replace a directory symlink. The NT rename operation's
 	// POSIX semantics can atomically replace the reparse point itself rather
@@ -46,6 +58,7 @@ func replaceCurrent(from, to string) error {
 	buffer := make([]byte, int(unsafe.Offsetof(dummy.FileName))+nameBytes)
 	info := (*fileRenameInformation)(unsafe.Pointer(&buffer[0]))
 	info.ReplaceIfExists = windows.FILE_RENAME_REPLACE_IF_EXISTS | windows.FILE_RENAME_POSIX_SEMANTICS
+	info.RootDirectory = dirHandle
 	info.FileNameLength = uint32(nameBytes)
 	copy((*[windows.MAX_LONG_PATH]uint16)(unsafe.Pointer(&info.FileName[0]))[:nameBytes/2:nameBytes/2], name)
 	var status windows.IO_STATUS_BLOCK
