@@ -14,6 +14,7 @@ import (
 )
 
 func main() {
+	prepareSubprocessConsole()
 	os.Exit(run())
 }
 
