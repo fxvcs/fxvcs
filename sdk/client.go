@@ -166,13 +166,14 @@ func (c *Client) open(ctx context.Context, path, operation string, diagnostic bo
 		return nil, WrapError(CodeCancelled, "cancelled", err)
 	}
 	r, err := app.Open(ctx, path, app.Options{
-		Diagnostic:    diagnostic,
-		Installed:     c.installed,
-		Operation:     operation,
-		GitExecutable: c.opts.GitExecutable,
-		CacheDir:      c.opts.CacheDir,
-		ConfigDir:     c.opts.ConfigDir,
-		LockTimeout:   c.opts.LockTimeout,
+		Diagnostic:         diagnostic,
+		Installed:          c.installed,
+		Operation:          operation,
+		GitExecutable:      c.opts.GitExecutable,
+		CacheDir:           c.opts.CacheDir,
+		ConfigDir:          c.opts.ConfigDir,
+		LauncherSourcePath: c.opts.LauncherSourcePath,
+		LockTimeout:        c.opts.LockTimeout,
 	})
 	if err != nil {
 		return nil, translateError("", err)

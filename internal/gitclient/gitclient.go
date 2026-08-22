@@ -196,6 +196,7 @@ func (c *Client) RunStreams(ctx context.Context, stdin io.Reader, stdout io.Writ
 		return fmt.Errorf("%w: %v", ErrGitNotFound, err)
 	}
 	cmd := exec.CommandContext(ctx, c.gitPath(), args...)
+	configureCommand(cmd)
 	cmd.Dir = c.Dir
 	cmd.Env = c.baseEnv()
 	cmd.Stdin = stdin
