@@ -52,7 +52,7 @@ jobs:
           Add-MpPreference -ExclusionPath "$env:LOCALAPPDATA\go-build"
           Add-MpPreference -ExclusionPath "$env:RUNNER_TEMP"
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -109,7 +109,7 @@ jobs:
     name: lint (ubuntu)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
