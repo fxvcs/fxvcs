@@ -48,6 +48,7 @@ const LauncherVersionConflict LauncherOutcome = "equal-version-conflict"
 const PhaseTransfer Phase = "transfer"
 const PhaseVerify Phase = "verify"
 const PhaseWrite Phase = "write"
+const PointerMaxSize = pointer.MaxSize
 const ProgressActive ProgressStatus = "active"
 const ProgressCancelled ProgressStatus = "cancelled"
 const ProgressCompleted ProgressStatus = "completed"
@@ -97,6 +98,7 @@ func (c *Client) ObjectRead(ctx context.Context, req ObjectReadRequest) (*Object
 func (c *Client) ObjectStat(ctx context.Context, req ObjectStatRequest) (*ObjectInfo, error)
 func (c *Client) ObjectsPublish(ctx context.Context, req ObjectsPublishRequest) (*ObjectsPublishResult, error)
 func (c *Client) ObjectsStatus(ctx context.Context, req ObjectsStatusRequest) (*ObjectsStatusResult, error)
+func (c *Client) OpenRemoteContent(ctx context.Context, req RemoteContentRequest) (*RemoteContent, error)
 func (c *Client) PublicationSummary(ctx context.Context, req PublicationSummaryRequest) (*PublicationSummaryResult, error)
 func (c *Client) ReconcileTarget(ctx context.Context, req ReconcileTargetRequest) (*ReconcileTargetResult, error)
 func (c *Client) ReleaseCreate(ctx context.Context, req ReleaseCreateRequest) (*ReleaseCreateResult, error)
@@ -136,6 +138,7 @@ func (c *Client) Verify(ctx context.Context, req VerifyRequest) (*VerifyResult, 
 func (e *Error) Error() string
 func (e *Error) Unwrap() error
 func (e *Error) WithHint(hint string) *Error
+func (rc *RemoteContent) Read(ctx context.Context, p Pointer) (*ObjectReadResult, error)
 func (s *ProgressStream) Complete(err error)
 func (s *ProgressStream) Progress(ev Event)
 func (s *ProgressStream) Snapshot() ProgressSnapshot
@@ -143,9 +146,11 @@ func (s *ProgressStream) Snapshots() <-chan ProgressSnapshot
 func CodeOf(err error) Code
 func Discard(Event)
 func HintOf(err error) string
+func IsPointer(data []byte) bool
 func New(opts Options) (*Client, error)
 func NewError(code Code, msg string) *Error
 func NewProgressStream(opts ProgressStreamOptions) *ProgressStream
+func ParsePointer(data []byte) (Pointer, error)
 func SupportedFormats() FormatVersions
 func WrapError(code Code, msg string, cause error) *Error
 type Action string
@@ -232,6 +237,7 @@ type PathSelector struct { Paths []string `json:"paths"` Glob bool `json:"glob,o
 type Phase string
 type PlanItem struct { Path string `json:"path,omitempty"` Paths []string `json:"paths,omitempty"` Digest string `json:"digest,omitempty"` Bytes int64 `json:"bytes,omitempty"` Remote string `json:"remote,omitempty"` }
 type PlannedResource struct { Name string `json:"name"` Source string `json:"source"` RepositoryName string `json:"repositoryName,omitempty"` Path string `json:"path,omitempty"` ResourceID string `json:"resourceID,omitempty"` Activation string `json:"activation"` ActivationSource string `json:"activationSource"` EnsureOrder int `json:"ensureOrder"` Mount string `json:"mount,omitempty"` }
+type Pointer struct { StorageDomainID string `json:"storageDomainID"` Encoding string `json:"encoding"` ManifestDigest string `json:"manifestDigest"` OID string `json:"oid"` Size int64 `json:"size"` }
 type ProgressFunc func(Event)
 type ProgressItem struct { Path string `json:"path,omitempty"` Digest string `json:"digest,omitempty"` Remote string `json:"remote,omitempty"` Phase Phase `json:"phase,omitempty"` Status ProgressStatus `json:"status"` Bytes int64 `json:"bytes,omitempty"` Total int64 `json:"total,omitempty"` WireBytes int64 `json:"wireBytes,omitempty"` Chunks int `json:"chunks,omitempty"` ChunksDone int `json:"chunksDone,omitempty"` Message string `json:"message,omitempty"` Parts []ProgressPart `json:"parts,omitempty"` }
 type ProgressPart struct { ID string `json:"id"` Status ProgressStatus `json:"status"` Index int `json:"index,omitempty"` Count int `json:"count,omitempty"` Bytes int64 `json:"bytes,omitempty"` Total int64 `json:"total,omitempty"` WireBytes int64 `json:"wireBytes,omitempty"` }
@@ -263,6 +269,8 @@ type ReleaseListResult struct { Releases []ReleaseSummary `json:"releases"` }
 type ReleaseNotesRequest struct { Path string `json:"path"` Name string `json:"name"` Since string `json:"since,omitempty"` }
 type ReleaseNotesResult struct { Release string `json:"release"` Since string `json:"since,omitempty"` Markdown string `json:"markdown"` Change ReleaseChange `json:"change"` }
 type ReleaseSummary struct { Name string `json:"name"` CreatedAt string `json:"createdAt"` CreatedBy string `json:"createdBy,omitempty"` Components int `json:"components"` Enabled int `json:"enabled"` SourceSetDigest string `json:"sourceSetDigest"` VariantOf string `json:"variantOf,omitempty"` UsedBy []string `json:"usedBy,omitempty"` }
+type RemoteContent struct { src *app.RemoteSource RepositoryID string `json:"repositoryID"` StorageDomainID string `json:"storageDomainID"` Remotes []string `json:"remotes"` }
+type RemoteContentRequest struct { Repository []byte `json:"-"` Credentials map[string]StorageCredentials `json:"-"` Paths map[string]string `json:"paths,omitempty"` }
 type RepairRequest struct { Path string `json:"path"` Launcher string `json:"launcher,omitempty"` }
 type RepairResult struct { Rebuilt []string `json:"rebuilt"` Refused []DoctorFinding `json:"refused"` }
 type RepositoryIdentifyRequest struct { Path string `json:"path"` }
@@ -307,6 +315,7 @@ type StatusResult struct { Entries []StatusEntry `json:"entries"` Skipped []Item
 type StorageAddRequest struct { Path string `json:"path"` Remote StorageRemoteSpec `json:"remote"` }
 type StorageAddResult struct { Remote StorageRemoteSpec `json:"remote"` }
 type StorageCapability struct { Name string `json:"name"` Supported bool `json:"supported"` Detail string `json:"detail,omitempty"` }
+type StorageCredentials struct { AccessKeyID string `json:"accessKeyID,omitempty"` SecretAccessKey string `json:"-"` SessionToken string `json:"-"` }
 type StorageListRequest struct { Path string `json:"path"` }
 type StorageListResult struct { Remotes []StorageRemoteSpec `json:"remotes"` }
 type StorageLoginRequest struct { Path string `json:"path"` Remote string `json:"remote"` AccessKeyID string `json:"accessKeyID,omitempty"` SecretAccessKey string `json:"-"` SessionToken string `json:"-"` Profile string `json:"profile,omitempty"` Forget bool `json:"forget,omitempty"` }
