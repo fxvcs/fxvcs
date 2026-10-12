@@ -188,7 +188,7 @@ func (r *verifiedChunkReader) Read(buf []byte) (int, error) {
 			r.current = nil
 			got := "sha256:" + hex.EncodeToString(r.hash.h.Sum(nil))
 			if r.hash.read != r.hash.size || got != r.hash.digest {
-				return n, r.fail(fmt.Errorf("reconcile: chunk %s failed verification: read %d bytes with digest %s", r.hash.digest, r.hash.read, got))
+				return n, r.fail(fmt.Errorf("%w: chunk %s failed verification: read %d bytes with digest %s", ErrIntegrity, r.hash.digest, r.hash.read, got))
 			}
 			r.index++
 			if n > 0 {
